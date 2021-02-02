@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<persistence version="2.0"
+             xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
+
+    <!-- Define a name used to get an entity manager. Define that you will
+    complete transactions with the DB  -->
+    <persistence-unit name="WiMi-DB" transaction-type="RESOURCE_LOCAL">
+
+        <!-- Define the class for Hibernate which implements JPA -->
+        <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+        <!-- Define the object that should be persisted in the database -->
+        <class>htwb.ai.WiMi.servlet.Song</class>
+        <properties>
+            <property name="hibernate.default_schema" value="songs"/>
+            <!-- Driver for DB database -->
+            <property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver"/>
+            <!-- URL for DB -->
+            <property name="javax.persistence.jdbc.url"  value="jdbc:postgresql://ec2-54-246-115-40.eu-west-1.compute.amazonaws.com:5432/dfg6ll08trsod3"/>
+            <!-- Username -->
+            <property name="javax.persistence.jdbc.user" value="yhhykwfhlrcitn"/>
+            <!-- Password -->
+            <property name="javax.persistence.jdbc.password" value="70cc7c266609c521ef0fd981fb5994fc4dcbc2b72ab073bf6ed711fc08fa0bbf"/>
+
+            <property name="hibernate.c3p0.min_size" value="1"/>
+            <property name="hibernate.c3p0.max_size" value="8"/>
+            <property name="hibernate.c3p0.timeout" value="1800"/>
+            <property name="hibernate.c3p0.max_statements" value="50"/>
+        </properties>
+    </persistence-unit>
+</persistence>
