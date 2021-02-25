@@ -1,7 +1,7 @@
-package htwb.ai.willi.Controller;
+package htwb.ai.willi.controller;
 
-import htwb.ai.willi.Enity.User;
-import htwb.ai.willi.Service.UserService;
+import htwb.ai.willi.enity.User;
+import htwb.ai.willi.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,17 +54,21 @@ public class UserController
                log.error("userSignIn: username and or password is missing ");
                return new ResponseEntity<>("username and or password is missing.", HttpStatus.UNAUTHORIZED);
           }
-          log.debug("userSignIn: Parameters accepted =  " + user.getUserId() + " - " + user.getPassword());
+          log.info("userSignIn: Parameters accepted =  " + user.getUserId() + " - " + user.getPassword());
 
 
           // Comparing with database
 
 
-          log.debug("userSignIn: Comparing with Database...");
-          User databaseUser = userService.getUser(user);
+          log.info("userSignIn: Comparing with Database...");
+          Optional<User> optionalUser = userService.findById(user);
+          User databaseUser;
 
-
-          if (databaseUser == null) // No Match found
+          if (optionalUser.isPresent()) // No Match found
+          {
+            databaseUser = optionalUser.get();
+          }
+          else
           {
                log.error("userSignIn: no Matching User in Database");
                return new ResponseEntity<>("User does not exist", HttpStatus.UNAUTHORIZED);
@@ -72,23 +76,24 @@ public class UserController
           log.error("userSignIn: One matching user in database 1/3");
 
 
-          if (!databaseUser.getUserId().equals(user.getUserId()))    // Not the same ID
-          {
-               log.error("userSignIn: User Id not matching = " + user.getUserId() + "  -  " + databaseUser.getUserId());
-               return new ResponseEntity<>("Wrong User Name", HttpStatus.UNAUTHORIZED);
-          }
-          log.debug("userSignIn: One matching user in database 2/3");
-
-
           if (!databaseUser.getPassword().equals(user.getPassword()))  // No the same password
           {
                log.error("userSignIn: Wrong Password");
                return new ResponseEntity<>("Wrong Password", HttpStatus.UNAUTHORIZED);
           }
-          log.debug("userSignIn: One matching user in database 3/3");
+          log.info("userSignIn: One matching user in database 2/3");
 
-          user.setToken();
-          return new ResponseEntity<>("Your Token is : " + user.getToken(), HttpStatus.OK);
+
+          if (!databaseUser.getUserId().equals(user.getUserId()))    // Not the same ID
+          {
+               log.error("userSignIn: User Id not matching = " + user.getUserId() + "  -  " + databaseUser.getUserId());
+               return new ResponseEntity<>("Wrong User Name", HttpStatus.UNAUTHORIZED);
+          }
+          log.info("userSignIn: One matching user in database 3/3");
+
+          databaseUser.setToken();
+          userService.saveUser(databaseUser);
+          return new ResponseEntity<>(databaseUser.getToken(), HttpStatus.OK);
      }
 
 
@@ -106,7 +111,7 @@ public class UserController
           try
           {
                Optional<User> user = userService.findByToken(token);
-               return user.map(value -> new ResponseEntity<>(value.getUserId(), HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(null, HttpStatus.NOT_FOUND));
+               return user.map(value -> new ResponseEntity<>(value.getUserId(), HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED));
           }
           catch (HttpStatusCodeException ex)
           {

@@ -1,7 +1,7 @@
-package htwb.ai.willi.Service;
+package htwb.ai.willi.service;
 
-import htwb.ai.willi.Enity.User;
-import htwb.ai.willi.Repository.UserRepository;
+import htwb.ai.willi.enity.User;
+import htwb.ai.willi.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,9 +13,9 @@ public class UserService
      @Autowired
      private UserRepository userRepository;
 
-     public User getUser(User user)
+     public Optional<User> findById(User user)
      {
-          return userRepository.getOne(user.getUserId());
+          return userRepository.findById(user.getUserId());
      }
 
      public Optional<User> findByToken(String token)
@@ -46,5 +46,11 @@ public class UserService
                return false;
           }
           return !user.getPassword().equals("");
+     }
+
+
+     public void saveUser(User user)
+     {
+          userRepository.save(user);
      }
 }

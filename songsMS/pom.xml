@@ -28,6 +28,8 @@
 
     <modules>
         <module>user-service</module>
+        <module>song-service</module>
+        <module>lyrics-service</module>
     </modules>
 
     <dependencies>

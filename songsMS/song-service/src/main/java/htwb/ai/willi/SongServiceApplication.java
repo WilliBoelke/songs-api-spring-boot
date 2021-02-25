@@ -1,4 +1,4 @@
-package htwb.ai.willi.songservice;
+package htwb.ai.willi;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
