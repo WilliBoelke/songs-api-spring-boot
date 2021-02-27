@@ -1,9 +1,10 @@
-package htwb.ai.willi.lyricsservice;
+package htwb.ai.willi;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 
-@SpringBootApplication
+@SpringBootApplication(exclude={DataSourceAutoConfiguration.class})
 public class LyricsServiceApplication {
 
 	public static void main(String[] args) {

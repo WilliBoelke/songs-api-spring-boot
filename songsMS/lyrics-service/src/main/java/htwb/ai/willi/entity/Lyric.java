@@ -1,20 +1,31 @@
-package htwb.ai.willi.lyricsservice.entity;
+package htwb.ai.willi.entity;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Table;
+import java.io.Serializable;
 
-@Entity
-public class Lyric
+
+public class Lyric implements Serializable, Comparable<Lyric>
 {
-     @Id
      private int songId;
 
-     @Column
      private String songTitle;
 
      private String lyric;
 
+
+     /**
+      * Required empty constructor
+      */
+     public Lyric()
+     {
+          // Empty
+     }
 
      public Lyric(int songId, String songTitle, String lyric)
      {
@@ -54,4 +65,15 @@ public class Lyric
      }
 
 
+     @Override
+     public int compareTo(Lyric o)
+     {
+
+          if (this.getSongTitle().equals(o.getSongTitle()) && this.getLyric().equals(o.getLyric()))
+          {
+               return 1;
+          }
+          return -1;
+
+     }
 }
