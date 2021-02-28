@@ -17,6 +17,7 @@ import org.springframework.web.client.HttpServerErrorException;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.Optional;
 
 
@@ -36,6 +37,39 @@ public class LyricController
      private RestTemplateWrapper restTemplateWrapper;
 
      private Logger log = LoggerFactory.getLogger(LyricController.class);
+
+
+     @GetMapping ( produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+     public ResponseEntity<String> getAllLyrics(@RequestHeader("Accept") String acceptHeader, @RequestHeader(
+             "Authorization") String authorization)
+     {
+          String userIDForGivenAuthorizationToken = "";
+          try
+          {
+               userIDForGivenAuthorizationToken = restTemplateWrapper.authenticateUser(authorization);
+          }
+          catch (HttpClientErrorException | HttpServerErrorException httpClientOrServerExc)
+          {
+               return new ResponseEntity("Not a valid authorization token :  " + authorization,
+                       HttpStatus.UNAUTHORIZED);
+          }
+
+          ArrayList<Lyric> allLyrics = null;
+          try
+          {
+               allLyrics = lyricService.getAll();
+          }
+          catch (IOException e)
+          {
+               return new ResponseEntity("A serverside problem occurred", HttpStatus.INTERNAL_SERVER_ERROR);
+          }
+
+          if (allLyrics.size() > 0)
+          {
+               return new ResponseEntity(allLyrics, HttpStatus.OK);
+          }
+          return new ResponseEntity<String>("No lyrics available", HttpStatus.NOT_FOUND);
+     }
 
 
 

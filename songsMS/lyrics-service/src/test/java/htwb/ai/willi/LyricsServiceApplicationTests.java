@@ -162,6 +162,48 @@ public class LyricsServiceApplicationTests {
 	}
 
 
+	/**
+	 * Posting a new and valid song
+	 * The song should be added to the Databse
+	 * and we can expect a HTTP 201
+	 * @throws Exception
+	 */
+	@Test
+	public void getAllLyrics() throws Exception
+	{
+		// Request
+		MvcResult result =
+			mockMvc.perform(get("/lyrics")
+				.accept(MediaType.APPLICATION_JSON)
+				.header(HttpHeaders.AUTHORIZATION, token)
+				.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().is(200)).andReturn();
+
+		//Verify Result
+		Assert.assertEquals("[{\"songId\":1,\"songTitle\":\"Dancing With Tears In My Eyes\",\"lyric\":\"Dancing with" +
+			" tears in my eyes\\nWeeping for the memory of a life gone by\\nDancing with tears in my eyes\\nLiving " +
+			"out a memory of a love that died\\n\\nIt's five and I'm driving home again\\nIt's hard to believe that" +
+			" it's my last time\\nThe man on the wireless cries again:\\n\\\"It's over, it's over\\\"\\n\\nDancing " +
+			"with tears in my eyes\\nWeeping for the memory of a life gone by\\nDancing with tears in my " +
+			"eyes\\nLiving out a memory of a love that died\\n\\nIt's late and I'm with my love alone\\nWe drink to" +
+			" forget the coming storm\\nWe love to the sound of our favourite song\\nOver and over\\n\\nDancing " +
+			"with tears in my eyes\\nLiving out a memory of a love that died\\n\\nIt's time and we're in each " +
+			"others arms\\nIt's time but I don't think we really care\\n\\nDancing with tears in my eyes\\nWeeping " +
+			"for the memory of a life gone by\\nDancing with tears in my eyes\\nWeeping for the memory of a life " +
+			"gone by\\n\\nDancing with tears in my eyes...\"},{\"songId\":1,\"songTitle\":\"Here Comes The Sun\"," +
+			"\"lyric\":\"Here comes the sun (doo doo doo doo)\\nHere comes the sun, and I say\\nIt's all " +
+			"right\\n\\nLittle darling, it's been a long cold lonely winter\\nLittle darling, it feels like years " +
+			"since it's been here\\nHere comes the sun\\nHere comes the sun, and I say\\nIt's all right\\n\\nLittle" +
+			" darling, the smiles returning to the faces\\nLittle darling, it seems like years since it's been " +
+			"here\\nHere comes the sun\\nHere comes the sun, and I say\\nIt's all right\\n\\nSun, sun, sun, here it" +
+			" comes\\nSun, sun, sun, here it comes\\nSun, sun, sun, here it comes\\nSun, sun, sun, here it " +
+			"comes\\nSun, sun, sun, here it comes\\n\\nLittle darling, I feel that ice is slowly melting\\nLittle " +
+			"darling, it seems like years since it's been clear\\nHere comes the sun\\nHere comes the sun, and I " +
+			"say\\nIt's all right\\n\\nHere comes the sun\\nHere comes the sun, and I say\\nIt's all right\\nIt's " +
+			"all right\"}]", result.getResponse().getContentAsString());
+
+	}
+
 
 	private String asJsonString(final Object obj)
 	{
