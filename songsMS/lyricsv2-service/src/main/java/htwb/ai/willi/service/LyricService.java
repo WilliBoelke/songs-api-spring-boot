@@ -41,4 +41,9 @@ public class LyricService
      {
           return lyricsRepository.getAll();
      }
+
+     public int deleteLyrics(String songName)
+     {
+          return lyricsRepository.deleteLyrics(songName);
+     }
 }

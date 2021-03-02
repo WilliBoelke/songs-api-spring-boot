@@ -12,7 +12,7 @@ target/
 .settings
 .springBeans
 .sts4-cache
-/lyricsRes
+/lyricsv2-service/lyricsRes
 ### IntelliJ IDEA ###
 .idea
 *.iws

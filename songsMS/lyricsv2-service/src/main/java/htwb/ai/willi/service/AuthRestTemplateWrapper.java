@@ -1,4 +1,4 @@
-package htwb.ai.willi.controller;
+package htwb.ai.willi.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -17,8 +17,8 @@ public class AuthRestTemplateWrapper implements RestTemplateWrapper
      }
 
      @Override
-     public String authenticateUser(String id) throws HttpClientErrorException, HttpServerErrorException
+     public String request(String param) throws HttpClientErrorException, HttpServerErrorException
      {
-          return    restTemplate.getForObject("http://localhost:9001 /auth/" + id, String.class);
+          return    restTemplate.getForObject("http://localhost:9001 /auth/" + param, String.class);
      }
 }

@@ -29,7 +29,7 @@
 	<modules>
 		<module>user-service</module>
 		<module>song-service</module>
-		<module>lyrics-service</module>
+		<module>lyricsv2-service</module>
 	</modules>
 
 	<dependencies>

@@ -1,7 +1,7 @@
 package htwb.ai.willi;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import htwb.ai.willi.controller.AuthRestTemplateWrapper;
+import htwb.ai.willi.service.AuthRestTemplateWrapper;
 import htwb.ai.willi.controller.LyricController;
 import htwb.ai.willi.entity.Lyric;
 import htwb.ai.willi.service.LyricService;
@@ -63,8 +63,8 @@ public class LyricsServiceApplicationTests {
 		invalidToken = "invalidToken";
 		userID = "testuser";
 		MockitoAnnotations.initMocks(this);
-		Mockito.when(restTemplateWrapper.authenticateUser(token)).thenReturn(userID);
-		Mockito.when(restTemplateWrapper.authenticateUser(invalidToken)).thenThrow(HttpServerErrorException.class);
+		Mockito.when(restTemplateWrapper.request(token)).thenReturn(userID);
+		Mockito.when(restTemplateWrapper.request(invalidToken)).thenThrow(HttpServerErrorException.class);
 		mockMvc = MockMvcBuilders.standaloneSetup(lyricController).build();
 	}
 
@@ -136,7 +136,7 @@ public class LyricsServiceApplicationTests {
 	public void postANewSong() throws Exception
 	{
 		//The Song to post
-		Lyric testLyric = new Lyric(1, "Here Comes The Sun", "Here comes the sun (doo doo doo doo)\n" + "Here comes the sun, and I say\n" + "It's all right\n" + "\n" + "Little darling, it's been a long cold lonely winter\n" + "Little darling, it feels like years since it's been here\n" + "Here comes the sun\n" + "Here comes the sun, and I say\n" + "It's all right\n" + "\n" + "Little darling, the smiles returning to the faces\n" + "Little darling, it seems like years since it's been here\n" + "Here comes the sun\n" + "Here comes the sun, and I say\n" + "It's all right\n" + "\n" + "Sun, sun, sun, here it comes\n" + "Sun, sun, sun, here it comes\n" + "Sun, sun, sun, here it comes\n" + "Sun, sun, sun, here it comes\n" + "Sun, sun, sun, here it comes\n" + "\n" + "Little darling, I feel that ice is slowly melting\n" + "Little darling, it seems like years since it's been clear\n" + "Here comes the sun\n" + "Here comes the sun, and I say\n" + "It's all right\n" + "\n" + "Here comes the sun\n" + "Here comes the sun, and I say\n" + "It's all right\n" + "It's all right");
+		Lyric testLyric = new Lyric(1, "Heredsfa sd Comes The Sun", "Here comes the sun (doo doo doo doo)\n" + "Here comes the sun, and I say\n" + "It's all right\n" + "\n" + "Little darling, it's been a long cold lonely winter\n" + "Little darling, it feels like years since it's been here\n" + "Here comes the sun\n" + "Here comes the sun, and I say\n" + "It's all right\n" + "\n" + "Little darling, the smiles returning to the faces\n" + "Little darling, it seems like years since it's been here\n" + "Here comes the sun\n" + "Here comes the sun, and I say\n" + "It's all right\n" + "\n" + "Sun, sun, sun, here it comes\n" + "Sun, sun, sun, here it comes\n" + "Sun, sun, sun, here it comes\n" + "Sun, sun, sun, here it comes\n" + "Sun, sun, sun, here it comes\n" + "\n" + "Little darling, I feel that ice is slowly melting\n" + "Little darling, it seems like years since it's been clear\n" + "Here comes the sun\n" + "Here comes the sun, and I say\n" + "It's all right\n" + "\n" + "Here comes the sun\n" + "Here comes the sun, and I say\n" + "It's all right\n" + "It's all right");
 
 		// Request
 		MvcResult response =

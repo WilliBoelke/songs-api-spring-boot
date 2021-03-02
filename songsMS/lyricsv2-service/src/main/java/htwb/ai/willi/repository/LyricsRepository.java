@@ -2,7 +2,6 @@ package htwb.ai.willi.repository;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import htwb.ai.willi.controller.LyricController;
 import htwb.ai.willi.entity.Lyric;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
@@ -10,10 +9,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import java.io.*;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 
 @Repository
@@ -41,7 +36,7 @@ public class LyricsRepository
                FileReader fileReader = new FileReader(getFile(name));
                BufferedReader bf = new BufferedReader(fileReader, 10000);
                String Json = bf.readLine();
-               log.info("getLyrics: Read teh following JSON string from File: " + Json);
+               log.info("getLyrics: Read the following JSON string from File: " + Json);
                return asLyricObject(Json);
           }
           else
@@ -54,6 +49,10 @@ public class LyricsRepository
 
      public void addLyrics(Lyric lyric) throws IOException
      {
+          if(doesFileExist(lyric.getSongTitle()))
+          {
+               createFile(lyric.getSongTitle());
+          }
           FileWriter fileWriter = new FileWriter(getFile(lyric.getSongTitle()));
           fileWriter.write(asJsonString(lyric));
           fileWriter.flush();
@@ -61,9 +60,21 @@ public class LyricsRepository
      }
 
 
-     public void deleteLyrics(String name)
+     public int deleteLyrics(String songName)
      {
-
+          if (doesFileExist(songName))
+          {
+               File songToDelete = getFile(songName);
+               if(songToDelete.delete())
+               {
+                    return 0; // Song successfully Deleted
+               }
+               else
+               {
+                    return  2; // Could delete
+               }
+          }
+          return  1; // song doesnt exist
      }
 
      public void updateLyrics(String name)
@@ -141,22 +152,19 @@ public class LyricsRepository
 
      private String getPathByName(String name)
      {
-          return "lyricsRes/" + name;
+          return "C:\\Users\\willi\\songLyrics\\" + name;
      }
 
      public ArrayList<Lyric> getAll() throws IOException
      {
-         File directory = new File("lyricsRes");
-         File[] files = directory.listFiles();
+         File directory = new File( "C:\\Users\\willi\\songLyrics");
+         String[] files = directory.list();
+         log.info("getAll: found files in diorectory : " + files.toString() );
          ArrayList<Lyric> lyricsList = new ArrayList<>();
 
-          for (File f: files)
+          for (String name: files)
           {
-               FileReader fileReader = new FileReader(f);
-               BufferedReader bf = new BufferedReader(fileReader, 10000);
-               String Json = bf.readLine();
-               log.info("getLyrics: Read teh following JSON string from File: " + Json);
-               lyricsList.add(asLyricObject(Json));
+               lyricsList.add(getLyrics(name));
           }
 
           return  lyricsList;
