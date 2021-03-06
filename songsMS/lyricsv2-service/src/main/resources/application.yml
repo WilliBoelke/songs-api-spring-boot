@@ -1,2 +1,5 @@
+spring:
+  application:
+    name: lyrics-service
 server:
   port: 9003

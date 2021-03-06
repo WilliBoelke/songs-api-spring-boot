@@ -30,6 +30,7 @@
 		<module>user-service</module>
 		<module>song-service</module>
 		<module>lyricsv2-service</module>
+		<module>registry-server</module>
 	</modules>
 
 	<dependencies>
