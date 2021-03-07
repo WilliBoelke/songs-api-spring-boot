@@ -62,13 +62,42 @@ public class UserControllerTest
           mockMvc.perform(post("/auth").contentType(MediaType.APPLICATION_JSON).content(asJsonString(user))).andExpect(status().is(401));
      }
 
-
      @Test
      public void wrongUserId() throws Exception
      {
           User user = new User("muster", "pass1234", "Maxime", "Muster");
           mockMvc.perform(post("/auth/").contentType(MediaType.APPLICATION_JSON).content(asJsonString(user))).andExpect(status().is(401));
      }
+
+     @Test
+     public void nullPassword() throws Exception
+     {
+          User user = new User("mmuster", null, "Maxime", "Muster");
+          mockMvc.perform(post("/auth/").contentType(MediaType.APPLICATION_JSON).content(asJsonString(user))).andExpect(status().is(401));
+     }
+
+     @Test
+     public void emptyPassword() throws Exception
+     {
+          User user = new User("mmuster", "", "Maxime", "Muster");
+          mockMvc.perform(post("/auth/").contentType(MediaType.APPLICATION_JSON).content(asJsonString(user))).andExpect(status().is(401));
+     }
+
+
+     @Test
+     public void nullName() throws Exception
+     {
+          User user = new User(null, "pass134", "Maxime", "Muster");
+          mockMvc.perform(post("/auth/").contentType(MediaType.APPLICATION_JSON).content(asJsonString(user))).andExpect(status().is(401));
+     }
+
+     @Test
+     public void emptyName() throws Exception
+     {
+          User user = new User("", "pass134", "Maxime", "Muster");
+          mockMvc.perform(post("/auth/").contentType(MediaType.APPLICATION_JSON).content(asJsonString(user))).andExpect(status().is(401));
+     }
+
 
 
      //-----------Get user by Token -----------//
@@ -123,7 +152,6 @@ public class UserControllerTest
      {
           mockMvc.perform(get("/auth/" + "wrongToken123").contentType(MediaType.APPLICATION_JSON)).andExpect(status().is(401)).andReturn();
      }
-
 
      private String asJsonString(final Object obj)
      {
