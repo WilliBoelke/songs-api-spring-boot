@@ -32,7 +32,6 @@ public class User implements Serializable
      private static final long serialVersionUID = 1L;
 
 
-
      //-----------Instance Variables -----------//
 
 
@@ -81,8 +80,6 @@ public class User implements Serializable
      private String token;
 
 
-
-
      //----------- Constructor -----------//
 
 
@@ -110,8 +107,6 @@ public class User implements Serializable
           this.firstName = firstName;
           this.lastName = lastName;
      }
-
-
 
 
      //----------- Auth Token -----------//
@@ -150,7 +145,6 @@ public class User implements Serializable
           log.info("createToken: final token = " + token);
           return token;
      }
-
 
 
      //----------- Getter And Setter -----------//

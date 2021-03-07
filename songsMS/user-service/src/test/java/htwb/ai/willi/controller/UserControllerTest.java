@@ -15,7 +15,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
-import static org.springframework.test.util.AssertionErrors.assertFalse;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -37,7 +36,6 @@ public class UserControllerTest
      private static String token;
 
 
-
      //-----------User Authentication -----------//
 
 
@@ -51,8 +49,8 @@ public class UserControllerTest
           String body = result.getResponse().getContentAsString();
           System.out.println(body);
           token = body;
-          Assert.assertFalse(token.length() < 20 );
-          Assert.assertFalse(token.length() >20 );
+          Assert.assertFalse(token.length() < 20);
+          Assert.assertFalse(token.length() > 20);
           Assert.assertEquals(20, token.length());
 
      }
@@ -61,10 +59,7 @@ public class UserControllerTest
      public void wrongPassword() throws Exception
      {
           User user = new User("mmuster", "pass134", "Maxime", "Muster");
-          mockMvc.perform(post("/auth")
-                  .contentType(MediaType.APPLICATION_JSON)
-                  .content(asJsonString(user)))
-                  .andExpect(status().is(401));
+          mockMvc.perform(post("/auth").contentType(MediaType.APPLICATION_JSON).content(asJsonString(user))).andExpect(status().is(401));
      }
 
 
@@ -72,10 +67,7 @@ public class UserControllerTest
      public void wrongUserId() throws Exception
      {
           User user = new User("muster", "pass1234", "Maxime", "Muster");
-          mockMvc.perform(post("/auth/")
-                  .contentType(MediaType.APPLICATION_JSON)
-                  .content(asJsonString(user)))
-                  .andExpect(status().is(401));
+          mockMvc.perform(post("/auth/").contentType(MediaType.APPLICATION_JSON).content(asJsonString(user))).andExpect(status().is(401));
      }
 
 
@@ -92,21 +84,16 @@ public class UserControllerTest
           //Authenticate
           User user = new User("userTwo", "pass1234", "User", "Two");
           MvcResult result1 =
-                  mockMvc.perform(post("/auth")
-                          .contentType(MediaType.APPLICATION_JSON)
-                          .content(asJsonString(user))).andReturn();
+                  mockMvc.perform(post("/auth").contentType(MediaType.APPLICATION_JSON).content(asJsonString(user))).andReturn();
 
           String body = result1.getResponse().getContentAsString();
           System.out.println(body);
           String userTwoToken = body;
 
 
-
           //Getting User Id
           MvcResult result2 =
-                  mockMvc.perform(get("/auth/" + userTwoToken)
-                          .contentType(MediaType.APPLICATION_JSON))
-                          .andExpect(status().is(200)).andReturn();
+                  mockMvc.perform(get("/auth/" + userTwoToken).contentType(MediaType.APPLICATION_JSON)).andExpect(status().is(200)).andReturn();
 
           String username = result2.getResponse().getContentAsString();
 
@@ -119,26 +106,22 @@ public class UserControllerTest
      public void getUserNameByToken() throws Exception
      {
           MvcResult result =
-                  mockMvc.perform(get("/auth/" + token)
-                          .contentType(MediaType.APPLICATION_JSON))
-                          .andExpect(status().is(200)).andReturn();
+                  mockMvc.perform(get("/auth/" + token).contentType(MediaType.APPLICATION_JSON)).andExpect(status().is(200)).andReturn();
 
           String username = result.getResponse().getContentAsString();
           Assert.assertEquals("mmuster", username);
      }
 
 
-
      /**
       * Should return HTTp Unauthorized / 401
+      *
       * @throws Exception
       */
      @Test
      public void getUserIDWithWrongToken() throws Exception
      {
-          mockMvc.perform(get("/auth/" + "wrongToken123")
-                  .contentType(MediaType.APPLICATION_JSON)).andExpect(status()
-                  .is(401)).andReturn();
+          mockMvc.perform(get("/auth/" + "wrongToken123").contentType(MediaType.APPLICATION_JSON)).andExpect(status().is(401)).andReturn();
      }
 
 

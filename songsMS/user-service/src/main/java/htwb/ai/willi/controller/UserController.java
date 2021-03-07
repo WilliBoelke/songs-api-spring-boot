@@ -31,7 +31,6 @@ public class UserController
      //-----------Instance Variables -----------//
 
 
-
      /**
       * Logger
       */
@@ -44,10 +43,7 @@ public class UserController
      private UserService userService;
 
 
-
-
      //-----------Http Mapping -----------//
-
 
 
      /**
@@ -67,7 +63,6 @@ public class UserController
           log.info("userSignIn: Called with parameters = " + user.getUserId());
 
 
-
           // Checking the input Parameters
 
 
@@ -77,7 +72,6 @@ public class UserController
                return new ResponseEntity<>("username and or password is missing.", HttpStatus.UNAUTHORIZED);
           }
           log.info("userSignIn: Parameters accepted =  " + user.getUserId() + " - " + user.getPassword());
-
 
 
           // Comparing with database
@@ -103,7 +97,6 @@ public class UserController
           log.info("userSignIn: One matching user in database 1/3");
 
 
-
           // No the same password
 
 
@@ -126,7 +119,6 @@ public class UserController
           log.info("userSignIn: One matching user in database 3/3");
 
 
-
           //Updating the model
 
 
@@ -134,15 +126,11 @@ public class UserController
           userService.saveUser(databaseUser);
 
 
-
           // response (Success)
 
 
           return new ResponseEntity<>(databaseUser.getToken(), HttpStatus.OK);
      }
-
-
-
 
 
      /**
@@ -168,9 +156,6 @@ public class UserController
                return new ResponseEntity<>(ex.getResponseBodyAsString(), ex.getStatusCode());
           }
      }
-
-
-
 
 
      //-----------Others -----------//
