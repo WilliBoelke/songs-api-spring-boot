@@ -3,7 +3,6 @@ package htwb.ai.willi.service;
 
 import htwb.ai.willi.enitity.SongList;
 import htwb.ai.willi.repository.SongListRepository;
-import htwb.ai.willi.repository.SongRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

@@ -32,18 +32,30 @@ public class SongController
 {
 
 
-     //-----------INSTANCE VARIABLES  -----------//
+     //-----------INSTANCE VARIABLES -----------//
 
+     /**
+      * The SongsService
+      */
      @Autowired
      private SongService songService;
 
+     /**
+      * A RestTemplate wrapper
+      * to send requests to the user-service
+      */
      @Autowired
      private RestTemplateWrapper restTemplateWrapper;
 
+     /**
+      * the logger
+      */
      private Logger log = LoggerFactory.getLogger(SongController.class);
 
 
-     //-----------CONSTRUCTORS  -----------//
+
+     //-----------CONSTRUCTORS -----------//
+
 
      @Autowired
      public SongController(RestTemplateWrapper restTemplateWrapper)
@@ -52,8 +64,10 @@ public class SongController
      }
 
 
-     //-----------GET  -----------//
+     //-----------HTTP MAPPINGS -----------//
 
+
+     //-----------HTTP GET -----------//
 
      /**
       * HTTP GET
@@ -66,8 +80,10 @@ public class SongController
      @GetMapping(produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
      public ResponseEntity<String> getAll(@RequestHeader("Authorization") String authorization)
      {
+          log.info("getAll: Called");
 
-          log.info("get All: Called");
+
+          // Check user token
 
           String userIDForGivenAuthorizationToken = "";
           try
@@ -80,8 +96,14 @@ public class SongController
                        HttpStatus.UNAUTHORIZED);
           }
 
+
           //Getting the Songs from the Repository
+
+
           ArrayList<Song> songs = songService.getAllSongs();
+
+
+          //Response
 
 
           if (songs != null && songs.size() > 0)
@@ -94,7 +116,6 @@ public class SongController
                log.info("get All: No songs in database");
                return new ResponseEntity(songs, HttpStatus.OK);
           }
-
 
           log.error("getAll No songs found");
           return new ResponseEntity<>("No Songs in the Database", HttpStatus.BAD_REQUEST);
@@ -111,11 +132,13 @@ public class SongController
       * @return
       */
      @GetMapping(value = "/{id}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
-     public ResponseEntity<String> getSong(@PathVariable(value = "id") Integer id,
-                                           @RequestHeader("Accept") String acceptHeader, @RequestHeader(
-                                                   "Authorization") String authorization)
+     public ResponseEntity<String> getSong(@PathVariable(value = "id") Integer id, @RequestHeader("Accept") String acceptHeader, @RequestHeader("Authorization") String authorization)
      {
           log.info("getSong: Called with id " + id);
+
+
+          // Check user token
+
 
           String userIDForGivenAuthorizationToken = "";
           try
@@ -128,11 +151,14 @@ public class SongController
                        HttpStatus.UNAUTHORIZED);
           }
 
+
+          // Response
+
+
           if (id < 0)
           {
                return new ResponseEntity<>("The ID needs to be positive", HttpStatus.BAD_REQUEST);
           }
-
 
           Optional<Song> optSong = songService.getSongById(id);
 
@@ -145,16 +171,18 @@ public class SongController
      }
 
 
-     //-----------DELETE -----------//
+     //-----------HTTP DELETE-----------//
 
 
      @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-     public ResponseEntity<String> deleteSong(@PathVariable(value = "id") Integer id,
-                                              @RequestHeader("Authorization") String authorization)
+     public ResponseEntity<String> deleteSong(@PathVariable(value = "id") Integer id, @RequestHeader("Authorization") String authorization)
      {
           log.info("deleteSong: Called with ID : " + id);
 
-          //Check user Token
+
+          // Check user token
+
+
           String userIDForGivenAuthorizationToken = "";
           try
           {
@@ -167,6 +195,8 @@ public class SongController
                        HttpStatus.UNAUTHORIZED);
 
           }
+
+
 
           if (id < 0)
           {
@@ -192,7 +222,7 @@ public class SongController
      }
 
 
-     //-----------POST -----------//
+     //-----------HTTP POST-----------//
 
 
      /**
@@ -207,11 +237,12 @@ public class SongController
       * @return
       */
      @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-     public ResponseEntity<String> postSong(@RequestBody Song song, HttpServletRequest request, @RequestHeader(
-             "Authorization") String authorization)
+     public ResponseEntity<String> postSong(@RequestBody Song song, HttpServletRequest request, @RequestHeader("Authorization") String authorization)
      {
-
           log.info("postSong: Called with new song : " + song.getTitle());
+
+
+          // Check user token
 
 
           String userIDForGivenAuthorizationToken = "";
@@ -224,6 +255,10 @@ public class SongController
                return new ResponseEntity("Not a valid authorization token :  " + authorization,
                        HttpStatus.UNAUTHORIZED);
           }
+
+
+          // Response
+
 
           if (song.getTitle() == null || song.getTitle().equals(""))
           {
@@ -239,13 +274,16 @@ public class SongController
      }
 
 
-     //-----------PUT -----------//
+     //-----------HTTP PUT-----------//
 
 
      @PutMapping(value = "/{id}", produces = "application/json", consumes = "application/json")
-     public ResponseEntity<String> putSong(@PathVariable(value = "id") Integer id, @RequestBody Song song,
-                                           @RequestHeader("Authorization") String authorization)
+     public ResponseEntity<String> putSong(@PathVariable(value = "id") Integer id, @RequestBody Song song, @RequestHeader("Authorization") String authorization)
      {
+
+
+          // Check user token
+
 
           String userIDForGivenAuthorizationToken = "";
           try
@@ -254,9 +292,12 @@ public class SongController
           }
           catch (HttpClientErrorException | HttpServerErrorException httpClientOrServerExc)
           {
-               return new ResponseEntity("Not a valid authorization token :  " + authorization,
-                       HttpStatus.UNAUTHORIZED);
+               return new ResponseEntity("Not a valid authorization token :  " + authorization, HttpStatus.UNAUTHORIZED);
           }
+
+
+          // Response
+
 
           if (id != song.getId())
           {
@@ -274,6 +315,10 @@ public class SongController
           return new ResponseEntity<String>("Song with ID '" + song.getId() + "' was updated.", HttpStatus.NO_CONTENT);
 
      }
+
+
+     //-----------OTHERS -----------//
+
 
 }
 

@@ -15,7 +15,9 @@ public class Song implements Serializable, Comparable<Song>
 
      private static final long serialVersionUID = 1L;
 
-     //-----------Instance Variables -----------//
+
+     //-----------INSTANCE VARIABLES -----------//
+
 
      @Id
      @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -49,7 +51,8 @@ public class Song implements Serializable, Comparable<Song>
      private int released;
 
 
-     //----------- Constructor -----------//
+     //----------- CONSTRUCTORS -----------//
+
 
      /**
       * Required empty constructor
@@ -59,6 +62,10 @@ public class Song implements Serializable, Comparable<Song>
           // Empty
      }
 
+     /**
+      * Constructor for the Builder Pattern
+      * @param builder
+      */
      public Song(Builder builder){
           this.id = builder.id;
           this.title = builder.title;
@@ -67,6 +74,14 @@ public class Song implements Serializable, Comparable<Song>
           this.released = builder.released;
      }
 
+     /**
+      * Standard Constructor to set all parameter
+      * @param id
+      * @param title
+      * @param artist
+      * @param label
+      * @param released
+      */
      public Song(int id, String title, String artist, String label, int released)
      {
           this.id = id;
@@ -76,7 +91,9 @@ public class Song implements Serializable, Comparable<Song>
           this.released = released;
      }
 
-     //----------- Getter And Setter -----------//
+
+     //----------- GETTER AND SETTER -----------//
+
 
      public String getTitle()
      {
@@ -133,26 +150,18 @@ public class Song implements Serializable, Comparable<Song>
           return serialVersionUID;
      }
 
-     @Override
-     public int compareTo(Song o)
-     {
-          if(this.getTitle().equals(o.getTitle()) &&
-                  this.getArtist().equals(o.getArtist()) &&
-                  this.getLabel().equals(o.getLabel()) &&
-                  this.getReleased() == o.getReleased())
-          {
-               return 1;
-          }
-          return -1;
-     }
 
 
-     //----------- Builder -----------//
+     //----------- BUILDER PATTERN-----------//
+
 
      public static Builder builder(){
           return new Builder();
      }
 
+     /**
+      * Song Builder class
+      */
      public static final class Builder
      {
           private int id;
@@ -190,7 +199,6 @@ public class Song implements Serializable, Comparable<Song>
                return this;
           }
 
-
           public Builder withReleased(int released)
           {
                this.released = released;
@@ -201,5 +209,22 @@ public class Song implements Serializable, Comparable<Song>
           {
                return new Song(this);
           }
+     }
+
+
+     //-----------OTHERS-----------//
+
+
+     @Override
+     public int compareTo(Song o)
+     {
+          if(this.getTitle().equals(o.getTitle()) &&
+                  this.getArtist().equals(o.getArtist()) &&
+                  this.getLabel().equals(o.getLabel()) &&
+                  this.getReleased() == o.getReleased())
+          {
+               return 1;
+          }
+          return -1;
      }
 }

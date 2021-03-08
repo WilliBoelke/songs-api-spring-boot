@@ -3,17 +3,27 @@ package htwb.ai.willi.enitity;
 import com.sun.istack.NotNull;
 
 import javax.persistence.*;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 import java.util.Set;
 import java.util.TreeSet;
 
+/**
+ *A list of Songs.
+ * A Song List has a unique ID, and is connected to a single user through
+ * its user id (here ownerId)
+ * A Songlist as a name and can be visible for everyone or just for its owner
+ */
 @Entity
 @Table(name = "songlist", schema = "public")
 public class SongList implements Serializable
 {
+
+     //-----------INSTANCE VARIABLES-----------//
+
+
+     /**
+      * The Id of the song list
+      */
      @Id
      @GeneratedValue(strategy = GenerationType.IDENTITY)
      @Basic(optional = false)
@@ -21,20 +31,36 @@ public class SongList implements Serializable
      @Column(name = "id", nullable = false)
      private Integer id;
 
+     /**
+      * The userid of its owner
+      */
      @Column(name = "ownerid")
      private String ownerId;
 
+     /**
+      * The name of the list
+      */
      @Column(name = "name")
      private String name;
 
+     /**
+      * true, when the list is only be visible for he owner
+      * else false
+      */
      @Column(name = "isPrivate")
      private Boolean isPrivate;
 
+     /**
+      * A set of Songs
+      */
      @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
      @JoinTable(name = "song_songList", schema = "public",
              joinColumns = {@JoinColumn(name = "list_id", referencedColumnName = "id")},
              inverseJoinColumns = {@JoinColumn(name = "song_id", referencedColumnName = "id")})
      private Set<Song> songList = new TreeSet<>();
+
+
+     //-----------GETTER AND SETTER-----------//
 
 
      public Integer getId()
@@ -91,6 +117,10 @@ public class SongList implements Serializable
      {
           this.name = name;
      }
+
+
+     //-----------OTHERS-----------//
+
 
      @Override
      public String toString()

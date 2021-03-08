@@ -2,6 +2,7 @@ package htwb.ai.willi.controller;
 
 import htwb.ai.willi.enitity.Song;
 import htwb.ai.willi.enitity.SongList;
+import htwb.ai.willi.service.RestTemplateWrapper;
 import htwb.ai.willi.service.SongListService;
 import htwb.ai.willi.service.SongService;
 import lombok.extern.slf4j.Slf4j;
@@ -14,7 +15,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
-import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
@@ -23,27 +23,58 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+
+/**
+ * Rest controller for Song Lists
+ */
 @RestController
 @RequestMapping(value = "/songLists")
 @Slf4j
 public class SongListController
 {
-     private final String TAG = this.getClass().getSimpleName();
+
+
+     //-----------INSTANCE VARIABLES-----------//
+
+
+     /**
+      * The Logger
+      */
      private Logger log = LoggerFactory.getLogger(SongListController.class);
 
+     /**
+      * The SongListService
+      */
      @Autowired
      private SongListService songListService;
 
+     /**
+      * The SongService
+      */
      @Autowired
      private SongService songService;
 
-     private RestTemplate restTemplate;
+     /**
+      * A RestTemplateTemplateWrapper
+      * to send requests to the user service
+      */
+     @Autowired
+
+     private RestTemplateWrapper restTemplateWrapper;
+
 
      //-----------CONSTRUCTORS  -----------//
+
+
      public SongListController()
      {
-          restTemplate = new RestTemplate();
      }
+
+
+     //-----------HTTP MAPPINGS -----------//
+
+
+     //-----------HTTP GET -----------//
 
 
      /**
@@ -62,29 +93,34 @@ public class SongListController
      {
           log.info("getById. Called from user " + authorization + ", with id: " + id);
 
+
+          // Check user token
+
+
           String userIDForGivenAuthorizationToken = "";
           try
           {
-               userIDForGivenAuthorizationToken =
-                       restTemplate.getForObject("http://localhost:9001 /auth/" + authorization, String.class);
+               userIDForGivenAuthorizationToken = restTemplateWrapper.authenticateUser(authorization);
           }
           catch (HttpClientErrorException | HttpServerErrorException httpClientOrServerExc)
           {
-               if (HttpStatus.UNAUTHORIZED.equals(httpClientOrServerExc.getStatusCode()))
-               {
-                    return new ResponseEntity("Not a valid authorization token :  " + authorization,
-                            HttpStatus.UNAUTHORIZED);
-               }
+               return new ResponseEntity("Not a valid authorization token :  " + authorization,
+                       HttpStatus.UNAUTHORIZED);
           }
 
+
           //Checking the Id of the songList
+
+
           if (id < 0)
           {
                log.error("getById: The ID for the songlist was null");
                return new ResponseEntity("You need to set an ID ", HttpStatus.BAD_REQUEST);
           }
 
+
           // Getting the SongList from the database, checking if the user is authorized and the returning it ...or not
+
 
           if (songListService.findById(id).isPresent())
           {
@@ -105,8 +141,8 @@ public class SongListController
                          if (songs.getIsPrivate())
                          {
                               log.error("getById: The SongList is not public");
-                              return new ResponseEntity("you arent the owner of the requested list, and the requested" +
-                                      " list is not public", HttpStatus.FORBIDDEN);
+                              return new ResponseEntity("you arent the owner of the requested list, and the " +
+                                      "requested" + " list is not public", HttpStatus.FORBIDDEN);
                          }
                          else
                          {
@@ -127,19 +163,19 @@ public class SongListController
      {
           log.info("getAll: Called from user " + authorization);
 
+
+          // Check user token
+
+
           String userIDForGivenAuthorizationToken = "";
           try
           {
-               userIDForGivenAuthorizationToken =
-                       restTemplate.getForObject("http://localhost:9001 /auth/" + authorization, String.class);
+               userIDForGivenAuthorizationToken = restTemplateWrapper.authenticateUser(authorization);
           }
           catch (HttpClientErrorException | HttpServerErrorException httpClientOrServerExc)
           {
-               if (HttpStatus.UNAUTHORIZED.equals(httpClientOrServerExc.getStatusCode()))
-               {
-                    return new ResponseEntity("Not a valid authorization token :  " + authorization,
-                            HttpStatus.UNAUTHORIZED);
-               }
+               return new ResponseEntity("Not a valid authorization token :  " + authorization,
+                       HttpStatus.UNAUTHORIZED);
           }
 
 
@@ -171,6 +207,9 @@ public class SongListController
      }
 
 
+     //-----------HTTP POST-----------//
+
+
      /**
       * POST /rest/songList
       * <p>
@@ -183,24 +222,26 @@ public class SongListController
       * @return
       */
      @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-     public ResponseEntity<String> postSongList(@RequestBody SongList songList, HttpServletRequest request, @RequestHeader("Authorization") String authorization)
+     public ResponseEntity<String> postSongList(@RequestBody SongList songList, HttpServletRequest request,
+                                                @RequestHeader("Authorization") String authorization)
      {
           log.info("postSongList: Called with user " + authorization);
+
+
+          // Check user token
+
 
           String userIDForGivenAuthorizationToken = "";
           try
           {
-               userIDForGivenAuthorizationToken =
-                       restTemplate.getForObject("http://localhost:9001 /auth/" + authorization, String.class);
+               userIDForGivenAuthorizationToken = restTemplateWrapper.authenticateUser(authorization);
           }
           catch (HttpClientErrorException | HttpServerErrorException httpClientOrServerExc)
           {
-               if (HttpStatus.UNAUTHORIZED.equals(httpClientOrServerExc.getStatusCode()))
-               {
-                    return new ResponseEntity("Not a valid authorization token :  " + authorization,
-                            HttpStatus.UNAUTHORIZED);
-               }
+               return new ResponseEntity("Not a valid authorization token :  " + authorization,
+                       HttpStatus.UNAUTHORIZED);
           }
+
 
           if (songList.getSongList() == null || songList.getSongList().isEmpty())
           {
@@ -237,7 +278,8 @@ public class SongListController
                Song temp = optionalSong.get();
                if (!song.getTitle().equals(temp.getTitle()) || !song.getArtist().equals(temp.getArtist()) || !song.getLabel().equals(temp.getLabel()) || song.getId() != temp.getId() || song.getReleased() != temp.getReleased())
                {
-                    log.error("postSongList: Song with ID " + song.getId() + "doesnt match with the same song " + "(ID) in DB");
+                    log.error("postSongList: Song with ID " + song.getId() + "doesnt match with the same song " +
+                            "(ID) in DB");
                     return new ResponseEntity<>("one of the songs in the list doesnt exit in our Database",
                             HttpStatus.BAD_REQUEST);
                }
@@ -254,8 +296,7 @@ public class SongListController
      }
 
 
-
-
+     //-----------HTTP DELETE -----------//
 
 
      @DeleteMapping(value = "/{id}")
@@ -263,24 +304,25 @@ public class SongListController
              "Authorization") String authorization)
      {
 
-          if (id < 0)
-          {
-               return new ResponseEntity<>("ID cant be less than 0. Your ID: " + id, HttpStatus.BAD_REQUEST);
-          }
+
+          // Check user token
+
 
           String userIDForGivenAuthorizationToken = "";
           try
           {
-               userIDForGivenAuthorizationToken =
-                       restTemplate.getForObject("http://localhost:9001 /auth/" + authorization, String.class);
+               userIDForGivenAuthorizationToken = restTemplateWrapper.authenticateUser(authorization);
           }
           catch (HttpClientErrorException | HttpServerErrorException httpClientOrServerExc)
           {
-               if (HttpStatus.UNAUTHORIZED.equals(httpClientOrServerExc.getStatusCode()))
-               {
-                    return new ResponseEntity("Not a valid authorization token :  " + authorization,
-                            HttpStatus.UNAUTHORIZED);
-               }
+               return new ResponseEntity("Not a valid authorization token :  " + authorization,
+                       HttpStatus.UNAUTHORIZED);
+          }
+
+
+          if (id < 0)
+          {
+               return new ResponseEntity<>("ID cant be less than 0. Your ID: " + id, HttpStatus.BAD_REQUEST);
           }
 
 
