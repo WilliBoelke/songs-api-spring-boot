@@ -13,8 +13,6 @@ import java.io.Serializable;
 public class Song implements Serializable, Comparable<Song>
 {
 
-     private static final long serialVersionUID = 1L;
-
 
      //-----------INSTANCE VARIABLES -----------//
 
@@ -143,11 +141,6 @@ public class Song implements Serializable, Comparable<Song>
      public void setId(int id)
      {
           this.id = id;
-     }
-
-     public static long getSerialVersionUID()
-     {
-          return serialVersionUID;
      }
 
 
