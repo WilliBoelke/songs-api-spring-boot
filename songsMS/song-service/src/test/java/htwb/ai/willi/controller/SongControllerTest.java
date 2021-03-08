@@ -74,7 +74,7 @@ public class SongControllerTest
 
 
 
-     //-----------Get All Songs -----------//
+     //-----------GET ALL SONGS-----------//
 
 
 
@@ -127,7 +127,7 @@ public class SongControllerTest
 
 
 
-     //-----------Get Song By ID -----------//
+     //-----------GET SONG BY ID-----------//
 
 
 
@@ -205,7 +205,7 @@ public class SongControllerTest
 
 
 
-     //-----------Post Songs -----------//
+     //-----------POST SONG-----------//
 
 
 
@@ -378,7 +378,7 @@ public class SongControllerTest
 
 
 
-     //-----------Delete Song -----------//
+     //-----------DELETE SONG-----------//
 
 
      /**
@@ -477,7 +477,7 @@ public class SongControllerTest
 
 
 
-     //-----------Put Song -----------//
+     //-----------PUT SONG-----------//
 
 
      /**

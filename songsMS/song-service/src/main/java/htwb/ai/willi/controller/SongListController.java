@@ -87,9 +87,8 @@ public class SongListController
       *
       * @return
       */
-     @GetMapping(value = "/{id}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
-     public ResponseEntity<SongList> getById(@PathVariable(value = "id") int id,
-                                             @RequestHeader("Authorization") String authorization)
+     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+     public ResponseEntity<SongList> getById(@PathVariable(value = "id") int id, @RequestHeader("Authorization") String authorization)
      {
           log.info("getById. Called from user " + authorization + ", with id: " + id);
 
@@ -157,9 +156,8 @@ public class SongListController
      }
 
 
-     @GetMapping(produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
-     public ResponseEntity<List<SongList>> getAll(@RequestParam(value = "userId") String userId, @RequestHeader(
-             "Authorization") String authorization)
+     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+     public ResponseEntity<List<SongList>> getAll(@RequestParam(value = "userId") String userId, @RequestHeader("Authorization") String authorization)
      {
           log.info("getAll: Called from user " + authorization);
 
