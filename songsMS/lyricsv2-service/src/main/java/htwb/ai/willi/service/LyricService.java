@@ -19,6 +19,8 @@ public class LyricService
      @Autowired
      private LyricsRepository lyricsRepository ;
 
+     @Autowired SongRestTemplateWrapper songRestTemplateWrapper;
+
      public Optional<Lyric> getByName(String songName) throws IOException
      {
           try
@@ -46,4 +48,19 @@ public class LyricService
      {
           return lyricsRepository.deleteLyrics(songName);
      }
+
+     public int verifySong(String name, int id)
+     {
+          String result = songRestTemplateWrapper.verifySongId(id);
+          if(result.equals("Does not Exist"))
+          {
+               return  3;
+          }
+          else if (!result.equals(name))
+          {
+               return 2;
+          }
+          return 1;
+     }
+
 }

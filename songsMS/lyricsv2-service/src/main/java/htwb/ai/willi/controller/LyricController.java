@@ -44,11 +44,6 @@ public class LyricController
      @Autowired
      private AuthRestTemplateWrapper authRestTemplateWrapper;
 
-     /**
-      * Song Rest Template Wrapper, to request the songs-service
-      */
-     @Autowired
-     private SongRestTemplateWrapper songRestTemplateWrapper;
 
      /**
       * The logger
@@ -75,6 +70,10 @@ public class LyricController
      public ResponseEntity<String> getAllLyrics(@RequestHeader("Accept") String acceptHeader, @RequestHeader(
              "Authorization") String authorization)
      {
+
+          // Check user token
+
+
           String userIDForGivenAuthorizationToken = "";
           try
           {
@@ -121,10 +120,14 @@ public class LyricController
       *         requested lyrics
       */
      @GetMapping(value = "/{title}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
-     public ResponseEntity<String> getSong(@PathVariable(value = "title") String songName,
-                                           @RequestHeader("Accept") String acceptHeader, @RequestHeader(
+     public ResponseEntity<String> getLyricsByTitle(@PathVariable(value = "title") String songName,
+                                                 @RequestHeader("Accept") String acceptHeader, @RequestHeader(
                                                    "Authorization") String authorization)
      {
+
+
+          // Check user token
+
 
           String userIDForGivenAuthorizationToken = "";
           try
@@ -173,10 +176,14 @@ public class LyricController
       *         requested lyrics
       */
      @GetMapping(value = "/id/{id}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
-     public ResponseEntity<String> getSong(@PathVariable(value = "id") int id,
-                                           @RequestHeader("Accept") String acceptHeader, @RequestHeader(
+     public ResponseEntity<String> getLyricsById(@PathVariable(value = "id") int id,
+                                                 @RequestHeader("Accept") String acceptHeader, @RequestHeader(
                                                    "Authorization") String authorization)
      {
+
+
+          // Check user token
+
 
           String userIDForGivenAuthorizationToken = "";
           try
@@ -220,11 +227,14 @@ public class LyricController
       * @return A ResponseEntity containing the HTTP Status and a message
       */
      @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-     public ResponseEntity<String> postSong(@RequestBody Lyric lyric, HttpServletRequest request, @RequestHeader(
+     public ResponseEntity<String> postLyrics(@RequestBody Lyric lyric, HttpServletRequest request, @RequestHeader(
              "Authorization") String authorization)
      {
 
           log.info("postSong: Called with new Lyrics for the Song : " + lyric.getSongTitle());
+
+
+          // Check user token
 
 
           String userIDForGivenAuthorizationToken = "";
@@ -238,10 +248,27 @@ public class LyricController
                        HttpStatus.UNAUTHORIZED);
           }
 
+
+          // Validate lyrics
+
+
           if (lyric.getSongTitle() == null || lyric.getSongTitle().equals(""))
           {
                log.error("postSong: Lyrics without title");
                return new ResponseEntity<>("Wrong body: no title", HttpStatus.BAD_REQUEST);
+          }
+
+          int checkSongInDatabase = lyricService.verifySong(lyric.getSongTitle(), lyric.getSongId());
+
+          if(checkSongInDatabase != 1)
+          {
+               switch (checkSongInDatabase)
+               {
+                    case 3:
+                         return new ResponseEntity<>("The Song doesnt exist in the database : not existing ID", HttpStatus.BAD_REQUEST);
+                    case 2:
+                         return new ResponseEntity<>("The Song doesnt exist in the database : id - title mismatch", HttpStatus.BAD_REQUEST);
+               }
           }
 
 
@@ -280,53 +307,9 @@ public class LyricController
              "Accept") String acceptHeader, @RequestHeader("Authorization") String authorization)
      {
 
-          String userIDForGivenAuthorizationToken = "";
-          try
-          {
-               userIDForGivenAuthorizationToken = authRestTemplateWrapper.request(authorization);
-          }
-          catch (HttpClientErrorException | HttpServerErrorException httpClientOrServerExc)
-          {
-               return new ResponseEntity("Not a valid authorization token :  " + authorization,
-                       HttpStatus.UNAUTHORIZED);
-          }
 
-          int result = lyricService.deleteLyrics(songName);
+          // Check user token
 
-          switch (result)
-          {
-               case 0:
-                    return new ResponseEntity("The Lyrics for the song " + songName + " was deleted", HttpStatus.OK);
-               case 1:
-                    return new ResponseEntity("The lyrics for the song " + songName + "doesnt exist",
-                            HttpStatus.BAD_REQUEST);
-               case 2:
-                    return new ResponseEntity("Couldt delete The Lyrics for the Song" + songName,
-                            HttpStatus.INTERNAL_SERVER_ERROR);
-               default:
-                    return new ResponseEntity("Couldt delete The Lyrics for the Song" + songName,
-                            HttpStatus.INTERNAL_SERVER_ERROR);
-          }
-     }
-
-
-     /**
-      * Deletes Lyrics by their id
-      *
-      * @param id
-      *         The song/lyrics id
-      * @param acceptHeader
-      *         Accept (should be JSON)
-      * @param authorization
-      *         The users auth token
-      *
-      * @return A ResponseEntity containing the HTTP status and a message
-      */
-     @DeleteMapping(value = "id//{id}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
-     public ResponseEntity<String> deleteByID(@PathVariable(value = "id") int id,
-                                              @RequestHeader("Accept") String acceptHeader, @RequestHeader(
-                                                      "Authorization") String authorization)
-     {
 
           String userIDForGivenAuthorizationToken = "";
           try
@@ -338,8 +321,6 @@ public class LyricController
                return new ResponseEntity("Not a valid authorization token :  " + authorization,
                        HttpStatus.UNAUTHORIZED);
           }
-
-          String songName = songRestTemplateWrapper.requestSongNameById(id);
 
           int result = lyricService.deleteLyrics(songName);
 

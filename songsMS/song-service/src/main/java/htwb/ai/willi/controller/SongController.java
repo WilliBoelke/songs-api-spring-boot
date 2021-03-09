@@ -171,6 +171,35 @@ public class SongController
      }
 
 
+     /**
+      * HTTP GET
+      * The Title of the song with the id.
+      * If the song does exist returns HTTP NOT_FOUND
+      *
+      * This is used by the Lyrics server, to verify that a song exist
+      *
+      * @return
+      */
+     @GetMapping(value = "verify/{id}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+     public ResponseEntity<String> getIdByTitle(@PathVariable(value = "id") Integer id, @RequestHeader("Accept") String acceptHeader)
+     {
+          log.info("getIdByTitle: Called with id " + id);
+
+
+          // Response
+
+          Optional<Song> optSong = songService.getSongById(id);
+
+
+          if (optSong.isPresent())
+          {
+               return new ResponseEntity(optSong.get().getTitle(), HttpStatus.OK);
+          }
+          return new ResponseEntity<String>("No Song with ID " + id, HttpStatus.NOT_FOUND);
+     }
+
+
+
      //-----------HTTP DELETE-----------//
 
 
