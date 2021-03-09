@@ -1,9 +1,9 @@
 package htwb.ai.willi.controller;
 
 
+import htwb.ai.willi.entity.Lyric;
 import htwb.ai.willi.service.AuthRestTemplateWrapper;
 import htwb.ai.willi.service.LyricService;
-import htwb.ai.willi.entity.Lyric;
 import htwb.ai.willi.service.SongRestTemplateWrapper;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
@@ -17,7 +17,6 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.constraints.Pattern;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Optional;
@@ -32,19 +31,47 @@ public class LyricController
 
      //-----------INSTANCE VARIABLES  -----------//
 
+
+     /**
+      * The Lyrics Service
+      */
      @Autowired
      private LyricService lyricService;
 
+     /**
+      * Auth RestTemplate wrapper to request the user-service
+      */
      @Autowired
      private AuthRestTemplateWrapper authRestTemplateWrapper;
 
+     /**
+      * Song Rest Template Wrapper, to request the songs-service
+      */
      @Autowired
      private SongRestTemplateWrapper songRestTemplateWrapper;
 
+     /**
+      * The logger
+      */
      private Logger log = LoggerFactory.getLogger(LyricController.class);
 
 
-     @GetMapping ( produces = MediaType.APPLICATION_JSON_VALUE)
+     //-----------HTTP GET-----------//
+
+
+     /**
+      * Returns all lyrics as a Json String
+      *
+      * @param acceptHeader
+      *         The Accept Header (should be JSON)
+      * @param authorization
+      *         The users ath token
+      *
+      * @return A ResponseEntity containing6 the HTTP status and a message,
+      *         in case of success the message will be a JSON string with the
+      *         requested lyrics
+      */
+     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
      public ResponseEntity<String> getAllLyrics(@RequestHeader("Accept") String acceptHeader, @RequestHeader(
              "Authorization") String authorization)
      {
@@ -79,9 +106,24 @@ public class LyricController
      }
 
 
-     @GetMapping (value = "/{title}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
-     public ResponseEntity<String> getSong(@PathVariable(value = "title") String songName, @RequestHeader("Accept") String acceptHeader, @RequestHeader(
-             "Authorization") String authorization)
+     /**
+      * GET for a specific song lyric, here defined by the title of the song
+      *
+      * @param songName
+      *         The name of the song/lyrics
+      * @param acceptHeader
+      *         The accept header (should be JSON)
+      * @param authorization
+      *         The users auth token
+      *
+      * @return A ResponseEntity containing6 the HTTP status and a message,
+      *         in case of success the message will be a JSON string with the
+      *         requested lyrics
+      */
+     @GetMapping(value = "/{title}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+     public ResponseEntity<String> getSong(@PathVariable(value = "title") String songName,
+                                           @RequestHeader("Accept") String acceptHeader, @RequestHeader(
+                                                   "Authorization") String authorization)
      {
 
           String userIDForGivenAuthorizationToken = "";
@@ -115,9 +157,25 @@ public class LyricController
 
      }
 
-     @GetMapping (value = "/id/{id}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
-     public ResponseEntity<String> getSong(@PathVariable(value = "id") int id, @RequestHeader("Accept") String acceptHeader, @RequestHeader(
-             "Authorization") String authorization)
+
+     /**
+      * GET for a specific song lyric, here defined by the id of the song
+      *
+      * @param id
+      *         The id of the song/lyrics
+      * @param acceptHeader
+      *         The accept header (should be JSON)
+      * @param authorization
+      *         The users auth token
+      *
+      * @return A ResponseEntity containing6 the HTTP status and a message,
+      *         in case of success the message will be a JSON string with the
+      *         requested lyrics
+      */
+     @GetMapping(value = "/id/{id}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+     public ResponseEntity<String> getSong(@PathVariable(value = "id") int id,
+                                           @RequestHeader("Accept") String acceptHeader, @RequestHeader(
+                                                   "Authorization") String authorization)
      {
 
           String userIDForGivenAuthorizationToken = "";
@@ -143,24 +201,23 @@ public class LyricController
           }
 
 
-          return new ResponseEntity<String>("Not Supported Ýet4" , HttpStatus.NOT_FOUND);
+          return new ResponseEntity<String>("Not Supported Ýet4", HttpStatus.NOT_FOUND);
 
      }
 
 
-
-     //-----------POST -----------//
+     //-----------HTTP POST-----------//
 
 
      /**
-      * HTTP POST
-      * <p>
-      * Adding new Lyrics to the files
+      * Posting new Lyrics, new Lyrics will be saved to the local file system using
+      * the {@link LyricService} and the LyricsRepository
       *
       * @param lyric
+      *         the new lyrics
       * @param request
       *
-      * @return
+      * @return A ResponseEntity containing the HTTP Status and a message
       */
      @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
      public ResponseEntity<String> postSong(@RequestBody Lyric lyric, HttpServletRequest request, @RequestHeader(
@@ -196,16 +253,31 @@ public class LyricController
           {
                e.printStackTrace();
           }
-         // URI location = URI.create(request.getRequestURI() + "/" + lyric.getSongTitle());
-          return new ResponseEntity<>("The Lyrics are saved, yo can access them under \\lyrics\\"+ lyric.getSongTitle(), HttpStatus.CREATED);
+          // URI location = URI.create(request.getRequestURI() + "/" + lyric.getSongTitle());
+          return new ResponseEntity<>("The Lyrics are saved, yo can access them under \\lyrics\\" + lyric.getSongTitle(), HttpStatus.CREATED);
 
      }
 
 
-     //-----------Delete -----------//
+     //-----------HTTP DELETE -----------//
 
-     @DeleteMapping (value = "/{title}", produces = MediaType.APPLICATION_JSON_VALUE)
-     public ResponseEntity<String> deleteByName(@PathVariable(value = "title") String songName, @RequestHeader("Accept") String acceptHeader, @RequestHeader("Authorization") String authorization)
+
+     /**
+      * Deletes lyrics by the title of the song
+      *
+      * @param songName
+      *         the name/ titel of the song
+      * @param acceptHeader
+      *         accept media type
+      * @param authorization
+      *         the users auth token
+      *
+      * @return ResponseEntity
+      *         with a String message and the HTTP Status
+      */
+     @DeleteMapping(value = "/{title}", produces = MediaType.APPLICATION_JSON_VALUE)
+     public ResponseEntity<String> deleteByName(@PathVariable(value = "title") String songName, @RequestHeader(
+             "Accept") String acceptHeader, @RequestHeader("Authorization") String authorization)
      {
 
           String userIDForGivenAuthorizationToken = "";
@@ -224,19 +296,36 @@ public class LyricController
           switch (result)
           {
                case 0:
-                    return new ResponseEntity("The Lyrics for the song " +songName+ " was deleted", HttpStatus.OK);
-               case 1 :
-                    return new ResponseEntity("The lyrics for the song " +songName+ "doesnt exist", HttpStatus.BAD_REQUEST);
+                    return new ResponseEntity("The Lyrics for the song " + songName + " was deleted", HttpStatus.OK);
+               case 1:
+                    return new ResponseEntity("The lyrics for the song " + songName + "doesnt exist",
+                            HttpStatus.BAD_REQUEST);
                case 2:
-                    return new ResponseEntity( "Couldt delete The Lyrics for the Song" + songName , HttpStatus.INTERNAL_SERVER_ERROR);
+                    return new ResponseEntity("Couldt delete The Lyrics for the Song" + songName,
+                            HttpStatus.INTERNAL_SERVER_ERROR);
                default:
-                    return new ResponseEntity( "Couldt delete The Lyrics for the Song" + songName , HttpStatus.INTERNAL_SERVER_ERROR);
+                    return new ResponseEntity("Couldt delete The Lyrics for the Song" + songName,
+                            HttpStatus.INTERNAL_SERVER_ERROR);
           }
      }
 
 
-     @DeleteMapping (value = "id//{id}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
-     public ResponseEntity<String> deleteByID(@PathVariable(value = "id") int id, @RequestHeader("Accept") String acceptHeader, @RequestHeader("Authorization") String authorization)
+     /**
+      * Deletes Lyrics by their id
+      *
+      * @param id
+      *         The song/lyrics id
+      * @param acceptHeader
+      *         Accept (should be JSON)
+      * @param authorization
+      *         The users auth token
+      *
+      * @return A ResponseEntity containing the HTTP status and a message
+      */
+     @DeleteMapping(value = "id//{id}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+     public ResponseEntity<String> deleteByID(@PathVariable(value = "id") int id,
+                                              @RequestHeader("Accept") String acceptHeader, @RequestHeader(
+                                                      "Authorization") String authorization)
      {
 
           String userIDForGivenAuthorizationToken = "";
@@ -257,13 +346,16 @@ public class LyricController
           switch (result)
           {
                case 0:
-                    return new ResponseEntity("The Lyrics for the song " +songName+ " was deleted", HttpStatus.OK);
-               case 1 :
-                    return new ResponseEntity("The lyrics for the song " +songName+ "doesnt exist", HttpStatus.BAD_REQUEST);
+                    return new ResponseEntity("The Lyrics for the song " + songName + " was deleted", HttpStatus.OK);
+               case 1:
+                    return new ResponseEntity("The lyrics for the song " + songName + "doesnt exist",
+                            HttpStatus.BAD_REQUEST);
                case 2:
-                    return new ResponseEntity( "Couldt delete The Lyrics for the Song" + songName , HttpStatus.INTERNAL_SERVER_ERROR);
+                    return new ResponseEntity("Couldt delete The Lyrics for the Song" + songName,
+                            HttpStatus.INTERNAL_SERVER_ERROR);
                default:
-                    return new ResponseEntity( "Couldt delete The Lyrics for the Song" + songName , HttpStatus.INTERNAL_SERVER_ERROR);
+                    return new ResponseEntity("Couldt delete The Lyrics for the Song" + songName,
+                            HttpStatus.INTERNAL_SERVER_ERROR);
           }
      }
 }
