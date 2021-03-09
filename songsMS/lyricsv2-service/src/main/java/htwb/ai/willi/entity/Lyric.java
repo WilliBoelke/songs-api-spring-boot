@@ -9,14 +9,37 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import java.io.Serializable;
 
-
+/**
+ * This Service manages Lyrics and saves the to the local file system.
+ * This Klass describes the Lyrics as managed here
+ * Lyrics have a name and an Id, which are equal to the name and the id
+ * of the song (in the songs-service)
+ *
+ * Finally they have a string which - of course - contains the Lyrics itself
+ */
 public class Lyric implements Serializable, Comparable<Lyric>
 {
+
+
+     //-----------INSTANCE VARIABLES  -----------//
+
+     /**
+      * The id of the son/lyrics
+      */
      private int songId;
 
+     /**
+      * The title of the song/lyrics
+      */
      private String songTitle;
 
+     /**
+      * The lyrics
+      */
      private String lyric;
+
+
+     //-----------CONSTRUCTORS-----------//
 
 
      /**
@@ -33,6 +56,10 @@ public class Lyric implements Serializable, Comparable<Lyric>
           this.songTitle = songTitle;
           this.lyric = lyric;
      }
+
+
+     //-----------GETTER AND SETTER -----------//
+
 
      public int getSongId()
      {
@@ -63,6 +90,9 @@ public class Lyric implements Serializable, Comparable<Lyric>
      {
           this.lyric = lyric;
      }
+
+
+     //-----------OTHERS -----------//
 
 
      @Override
