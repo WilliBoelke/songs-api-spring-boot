@@ -20,15 +20,33 @@ import java.util.ArrayList;
 public class LyricsRepository
 {
 
-     public static final String RUNTIME_DIRECTORY = "";
+     public static final String RUNTIME_DIRECTORY = "C:\\Users\\willi\\songLyrics\\";
 
-     public static final String TEST_DIRECTORY = "";
+     public static final String TEST_DIRECTORY = "C:\\Users\\willi\\songLyricsTest\\";
 
 
      //-----------INSTANCE VARIABLES -----------//
 
-
+     /**
+      * The logger
+      */
      private Logger log = LoggerFactory.getLogger(LyricsRepository.class);
+
+     /**
+      * The path of the directory in use
+      * can be either <code>RUNTIME_DIRECTORY</code>
+      * or <code>TEST_DIRECTORY</code>
+      */
+     private String currentDirectoryPath;
+
+
+     //-----------CONSTRUCTORS -----------//
+
+
+     public LyricsRepository()
+     {
+          currentDirectoryPath = RUNTIME_DIRECTORY;
+     }
 
 
      //-----------ADD UPDATE DELETE AND GET LYRICS -----------//
@@ -157,7 +175,7 @@ public class LyricsRepository
           }
           else
           {
-               log.info("createFile: craeted new file with name " + name);
+               log.info("createFile: created new file with name " + name);
                file.createNewFile();
           }
           return file;
@@ -165,11 +183,12 @@ public class LyricsRepository
 
      private String getPathByName(String name)
      {
-          return "C:\\Users\\willi\\songLyrics\\" + name;
+          return currentDirectoryPath + name;
      }
 
 
      //-----------JSON TO POJO-----------//
+
 
      /**
       * Converts a POJO to a JSON string
@@ -209,6 +228,20 @@ public class LyricsRepository
           {
                throw new RuntimeException(e);
           }
+     }
+
+
+     //-----------OTHERS-----------//
+
+
+     /**
+      * Used to change the working directory
+      * for example fore testing.
+      * @param path
+      */
+     public void setDirectory(String path)
+     {
+          this.currentDirectoryPath = path;
      }
 
 }

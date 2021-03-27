@@ -161,57 +161,6 @@ public class LyricController
      }
 
 
-     /**
-      * GET for a specific song lyric, here defined by the id of the song
-      *
-      * @param id
-      *         The id of the song/lyrics
-      * @param acceptHeader
-      *         The accept header (should be JSON)
-      * @param authorization
-      *         The users auth token
-      *
-      * @return A ResponseEntity containing6 the HTTP status and a message,
-      *         in case of success the message will be a JSON string with the
-      *         requested lyrics
-      */
-     @GetMapping(value = "/id/{id}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
-     public ResponseEntity<String> getLyricsById(@PathVariable(value = "id") int id,
-                                                 @RequestHeader("Accept") String acceptHeader, @RequestHeader(
-                                                   "Authorization") String authorization)
-     {
-
-
-          // Check user token
-
-
-          String userIDForGivenAuthorizationToken = "";
-          try
-          {
-               userIDForGivenAuthorizationToken = authRestTemplateWrapper.request(authorization);
-          }
-          catch (HttpClientErrorException | HttpServerErrorException httpClientOrServerExc)
-          {
-               return new ResponseEntity("Not a valid authorization token :  " + authorization,
-                       HttpStatus.UNAUTHORIZED);
-          }
-
-
-          Optional<Lyric> optLyric = null;
-          try
-          {
-               optLyric = lyricService.getByName("songName");
-          }
-          catch (IOException e)
-          {
-               e.printStackTrace();
-          }
-
-
-          return new ResponseEntity<String>("Not Supported Ýet4", HttpStatus.NOT_FOUND);
-
-     }
-
 
      //-----------HTTP POST-----------//
 

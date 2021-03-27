@@ -28,7 +28,7 @@ import java.util.Set;
  * Rest controller for Song Lists
  */
 @RestController
-@RequestMapping(value = "/songLists")
+@RequestMapping(value = "/playlist")
 @Slf4j
 public class SongListController
 {

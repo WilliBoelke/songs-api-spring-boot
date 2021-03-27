@@ -26,7 +26,7 @@ import java.util.Optional;
  * Lets the user add, get delete and update songs from the database
  */
 @RestController
-@RequestMapping(value = "/songs")
+@RequestMapping(value = "")
 @Slf4j
 public class SongController
 {
@@ -219,7 +219,6 @@ public class SongController
           }
           catch (HttpClientErrorException | HttpServerErrorException httpClientOrServerExc)
           {
-
                return new ResponseEntity("Not a valid authorization token :  " + authorization,
                        HttpStatus.UNAUTHORIZED);
 

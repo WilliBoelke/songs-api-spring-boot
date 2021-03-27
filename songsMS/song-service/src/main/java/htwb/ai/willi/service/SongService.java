@@ -87,7 +87,7 @@ public class SongService
 
 
      /**
-      * Updates an already4 existing song in the Database
+      * Updates an already existing song in the Database
       *
       * @param song
       *         the new version of the Song
