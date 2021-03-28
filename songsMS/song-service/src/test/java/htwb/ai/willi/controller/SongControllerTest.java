@@ -90,7 +90,7 @@ public class SongControllerTest
      {
           //Request
           MvcResult result =
-                  mockMvc.perform(get("/songs").header(HttpHeaders.AUTHORIZATION, token))
+                  mockMvc.perform(get("/").header(HttpHeaders.AUTHORIZATION, token))
                           .andExpect(status().is(200)).andExpect(content()
                           .contentType(MediaType.APPLICATION_JSON)).andReturn();
 
@@ -115,7 +115,7 @@ public class SongControllerTest
      {
           //Request
           MvcResult result =
-                  mockMvc.perform(get("/songs").header(HttpHeaders.AUTHORIZATION, invalidToken))
+                  mockMvc.perform(get("/").header(HttpHeaders.AUTHORIZATION, invalidToken))
                           .andExpect(status().is(401)).andExpect(content()
                           .contentType(MediaType.APPLICATION_JSON)).andReturn();
 
@@ -141,7 +141,7 @@ public class SongControllerTest
      {
           //Request
           MvcResult result =
-                  mockMvc.perform(get("/songs/2")
+                  mockMvc.perform(get("/2")
                           .accept(MediaType.APPLICATION_JSON)
                           .header(HttpHeaders.AUTHORIZATION, token))
                           .andExpect(status().is(200)).andExpect(content()
@@ -164,7 +164,7 @@ public class SongControllerTest
      {
           //Request
           MvcResult result =
-                  mockMvc.perform(get("/songs/2")
+                  mockMvc.perform(get("/2")
                           .accept(MediaType.APPLICATION_JSON)
                           .header(HttpHeaders.AUTHORIZATION, invalidToken))
                           .andExpect(status().is(401)).andExpect(content()
@@ -190,7 +190,7 @@ public class SongControllerTest
      {
           //Request
           MvcResult result =
-               mockMvc.perform(get("/songs/3")
+               mockMvc.perform(get("/3")
                        .accept(MediaType.APPLICATION_JSON)
                        .header(HttpHeaders.AUTHORIZATION, token))
                        .andExpect(status().is(404)).andExpect(content()
@@ -223,7 +223,7 @@ public class SongControllerTest
 
           // Request
           MvcResult response =
-                  mockMvc.perform(post("/songs")
+                  mockMvc.perform(post("/")
                           .accept(MediaType.APPLICATION_JSON)
                           .header(HttpHeaders.AUTHORIZATION, token)
                           .contentType(MediaType.APPLICATION_JSON)
@@ -235,7 +235,7 @@ public class SongControllerTest
 
           //Request the new song
           MvcResult getterResponse =
-                  mockMvc.perform(get("/songs/3")
+                  mockMvc.perform(get("/3")
                           .accept(MediaType.APPLICATION_JSON)
                           .header(HttpHeaders.AUTHORIZATION, token))
                           .andExpect(status().is(200)).andExpect(content()
@@ -266,7 +266,7 @@ public class SongControllerTest
 
           // Request
           MvcResult result =
-                  mockMvc.perform(post("/songs")
+                  mockMvc.perform(post("/")
                           .accept(MediaType.APPLICATION_JSON)
                           .header(HttpHeaders.AUTHORIZATION, invalidToken)
                           .contentType(MediaType.APPLICATION_JSON)
@@ -293,7 +293,7 @@ public class SongControllerTest
 
 
           MvcResult result =
-          mockMvc.perform(post("/songs")
+          mockMvc.perform(post("/")
                   .header(HttpHeaders.AUTHORIZATION, token)
                   .contentType(MediaType.APPLICATION_JSON)
                   .content(asJsonString(song)))
@@ -316,7 +316,7 @@ public class SongControllerTest
           Song song = new Song(3, "Travelling Light", "Leonard Cohen", "", 2016);
 
           MvcResult response =
-                  mockMvc.perform(post("/songs")
+                  mockMvc.perform(post("/")
                           .header(HttpHeaders.AUTHORIZATION, token)
                           .contentType(MediaType.APPLICATION_JSON)
                           .content(asJsonString(song))).andExpect(status().is(201)).
@@ -324,7 +324,7 @@ public class SongControllerTest
 
           //Request the new song
           MvcResult getterResponse =
-                  mockMvc.perform(get("/songs/3")
+                  mockMvc.perform(get("/3")
                           .accept(MediaType.APPLICATION_JSON)
                           .header(HttpHeaders.AUTHORIZATION, token))
                           .andExpect(status().is(200)).andExpect(content()
@@ -353,7 +353,7 @@ public class SongControllerTest
           Song song = new Song(3, "Travelling Light", "", "Columbia", 2016);
 
           MvcResult response =
-                  mockMvc.perform(post("/songs")
+                  mockMvc.perform(post("/")
                           .header(HttpHeaders.AUTHORIZATION, token)
                           .contentType(MediaType.APPLICATION_JSON)
                           .content(asJsonString(song))).andExpect(status().is(201)).
@@ -361,7 +361,7 @@ public class SongControllerTest
 
           //Request the new song
           MvcResult getterResponse =
-                  mockMvc.perform(get("/songs/3")
+                  mockMvc.perform(get("/3")
                           .accept(MediaType.APPLICATION_JSON)
                           .header(HttpHeaders.AUTHORIZATION, token))
                           .andExpect(status().is(200)).andExpect(content()
@@ -396,7 +396,7 @@ public class SongControllerTest
 
           //delete entry
           MvcResult result =
-                  mockMvc.perform(delete("/songs/1")
+                  mockMvc.perform(delete("/1")
                           .accept(MediaType.APPLICATION_JSON)
                           .header(HttpHeaders.AUTHORIZATION, token))
                           .andExpect(status().is(204)).andExpect(content()
@@ -407,7 +407,7 @@ public class SongControllerTest
 
           //Request
           MvcResult resultGet =
-                  mockMvc.perform(get("/songs/1")
+                  mockMvc.perform(get("/1")
                           .accept(MediaType.APPLICATION_JSON)
                           .header(HttpHeaders.AUTHORIZATION, token))
                           .andExpect(status().is(404)).andExpect(content()
@@ -431,7 +431,7 @@ public class SongControllerTest
      {
           //delete entry
           MvcResult result =
-                  mockMvc.perform(delete("/songs/20")
+                  mockMvc.perform(delete("/20")
                           .accept(MediaType.APPLICATION_JSON)
                           .header(HttpHeaders.AUTHORIZATION, token))
                           .andExpect(status().is(404)).andExpect(content()
@@ -453,7 +453,7 @@ public class SongControllerTest
      {
           //delete entry
           MvcResult result =
-                  mockMvc.perform(delete("/songs/1")
+                  mockMvc.perform(delete("/1")
                           .accept(MediaType.APPLICATION_JSON)
                           .header(HttpHeaders.AUTHORIZATION, invalidToken))
                           .andExpect(status().is(401)).andExpect(content()
@@ -464,7 +464,7 @@ public class SongControllerTest
 
           //Request
           MvcResult resultGet =
-                  mockMvc.perform(get("/songs/1")
+                  mockMvc.perform(get("/1")
                           .accept(MediaType.APPLICATION_JSON)
                           .header(HttpHeaders.AUTHORIZATION, token))
                           .andExpect(status().is(200)).andExpect(content()
@@ -492,7 +492,7 @@ public class SongControllerTest
           Song changedSong = Song.builder().withId(2).withTitle("Changed").withArtist("alsoChanged").build();
 
           MvcResult result =
-          mockMvc.perform(put("/songs/2")
+          mockMvc.perform(put("/2")
                   .accept(MediaType.APPLICATION_JSON)
                   .header(HttpHeaders.AUTHORIZATION, token)
                   .contentType(MediaType.APPLICATION_JSON)
@@ -516,7 +516,7 @@ public class SongControllerTest
           Song changedSong = Song.builder().withId(2).withTitle("Changed").withArtist("alsoChanged").build();
 
           MvcResult result =
-                  mockMvc.perform(put("/songs/31")
+                  mockMvc.perform(put("/31")
                           .accept(MediaType.APPLICATION_JSON)
                           .header(HttpHeaders.AUTHORIZATION, token)
                           .contentType(MediaType.APPLICATION_JSON)

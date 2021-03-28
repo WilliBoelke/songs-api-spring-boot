@@ -30,9 +30,7 @@ import org.springframework.web.client.HttpServerErrorException;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -43,7 +41,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("test")
 public class SongListControllerTest
 {
-     /*8
+
      @Autowired
      private MockMvc mockMvc;
 
@@ -88,6 +86,7 @@ public class SongListControllerTest
       *
       * @throws Exception
       */
+
      /**
       * Get all songs with a valid user authorization token
       * Should Return 2 songs from the H2 Database
@@ -95,26 +94,11 @@ public class SongListControllerTest
       *
       * @throws Exception
       */
-     /**@Test
-     public void getAllSongs() throws Exception
+     @Test
+     public void getAll() throws Exception
      {
-          //Request
-          MvcResult result =
-                  mockMvc.perform(get("/songLists")
-                          .accept(MediaType.APPLICATION_JSON)
-                          .header(HttpHeaders.AUTHORIZATION, token)
-                          .header("userId", "mmuster"))
-                          .andExpect(status()
-                                  .is(400))
-                          .andExpect(content()
-                                .contentType(MediaType.APPLICATION_JSON)).andReturn();
 
-          //Verify Result
-          String content = (result.getResponse().getContentAsString());
-          System.out.println(content + "-----------------------------");
-          List<SongList> songs = Arrays.asList(new ObjectMapper().readValue(content, SongList[].class));
-          Assert.assertTrue(songs.size() > 0);
-          Assert.assertEquals(songs.size(), 2);
+
      }
 
 
@@ -126,13 +110,12 @@ public class SongListControllerTest
       *
       * @throws Exception
       */
-     /**
      @Test
      public void getAllSongsInvalidAuthorization() throws Exception
      {
           //Request
           MvcResult result =
-                  mockMvc.perform(get("/songLists/1").header(HttpHeaders.AUTHORIZATION, invalidToken))
+                  mockMvc.perform(get("/playlist/1").header(HttpHeaders.AUTHORIZATION, invalidToken))
                           .andExpect(status().is(401)).andExpect(content()
                           .contentType(MediaType.APPLICATION_JSON)).andReturn();
 
@@ -144,73 +127,74 @@ public class SongListControllerTest
 
 
 
-     //-----------GET SONG BY ID-----------//
+     //-----------GET SONGLIST BY ID-----------//
 
 
 
      /**
-      * Get Song by id with a valid id and authorization token
-      * Should return song with id two and Http 200 / OK
+      * Get SonList by id with a valid id and authorization
+      * Should return message and Http 202 / Unauthorized
+      * And a JSON string which can be mapped into a SongList Pojo
       * @throws Exception
       */
-     /**
      @Test
      public void getSongBId() throws Exception
      {
           //Request
           MvcResult result =
-                  mockMvc.perform(get("/songs/2")
-                          .accept(MediaType.APPLICATION_JSON)
-                          .header(HttpHeaders.AUTHORIZATION, token))
-                          .andExpect(status().is(200)).andExpect(content()
+                  mockMvc.perform(get("/playlist/1").header(HttpHeaders.AUTHORIZATION, token))
+                          .andExpect(status().is(202)).andExpect(content()
                           .contentType(MediaType.APPLICATION_JSON)).andReturn();
 
 
           //Verify Result
-          Assert.assertEquals("{\"id\":2,\"title\":\"test\",\"artist\":\"test\",\"label\":\"test\",\"released\":1985}", result.getResponse().getContentAsString());
+          String content = (result.getResponse().getContentAsString());
+          SongList songList = asSongList(content);
+          Assert.assertEquals("testplalist", songList.getName());
+          Assert.assertEquals( "mmuster", songList.getOwnerId());
+          Assert.assertFalse( songList.getIsPrivate());
+          Assert.assertEquals(2, songList.getSongList().size());
      }
 
 
 
      /**
-      * Get Song by id with a valid id but invalid authorization
-      * Should return message and Http 401 / Unauthorized
+      * Get SonList by id with an invalid auth token
+      * Should return HTTP 401/ Unauthorized and a message
+      *
       * @throws Exception
       */
-     /**
      @Test
-     public void getSogByIdInvalidAuth() throws Exception
+     public void getSongListByIdInvalidAuth() throws Exception
      {
           //Request
           MvcResult result =
-                  mockMvc.perform(get("/songs/2")
-                          .accept(MediaType.APPLICATION_JSON)
-                          .header(HttpHeaders.AUTHORIZATION, invalidToken))
+                  mockMvc.perform(get("/playlist/1").header(HttpHeaders.AUTHORIZATION, invalidToken))
                           .andExpect(status().is(401)).andExpect(content()
                           .contentType(MediaType.APPLICATION_JSON)).andReturn();
 
 
           //Verify Result
-          Assert.assertEquals("Not a valid authorization token :  invalidToken", result.getResponse().getContentAsString());
+          String content = (result.getResponse().getContentAsString());
+          Assert.assertEquals("Not a valid authorization token :  invalidToken", content);
      }
 
 
 
      /**
-      * Getting a song by an id which doesnt exist
+      * Getting a SongList by an id which doesnt exist
       * we have the ids 1 and 2 in the database
       * so lets request id= 3
       *
       * This should return an message and Http 404
       * @throws Exception
       */
-     /**
      @Test
-     public void getSongByIdNotExistingId() throws Exception
+     public void getSongListByIdNotExistingId() throws Exception
      {
           //Request
           MvcResult result =
-                  mockMvc.perform(get("/songs/3")
+                  mockMvc.perform(get("/playlist/200")
                           .accept(MediaType.APPLICATION_JSON)
                           .header(HttpHeaders.AUTHORIZATION, token))
                           .andExpect(status().is(404)).andExpect(content()
@@ -218,10 +202,21 @@ public class SongListControllerTest
 
 
           //Verify Result
-          Assert.assertEquals("No Song with ID 3", result.getResponse().getContentAsString());
+          Assert.assertEquals("The list with the ID 200 was empty", result.getResponse().getContentAsString());
      }
-*/
+
+     private SongList asSongList(String returnedObject)
+     {
+          try
+          {
+               return new ObjectMapper().readValue(returnedObject, SongList.class);
+          }
+          catch (Exception e)
+          {
+               throw new RuntimeException(e);
+          }
 
 
+     }
 
 }
