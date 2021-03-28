@@ -114,7 +114,7 @@ public class SongController
           else if (songs != null && songs.size() == 0)
           {
                log.info("get All: No songs in database");
-               return new ResponseEntity(songs, HttpStatus.OK);
+               return new ResponseEntity("No Songs in Database", HttpStatus.OK);
           }
 
           log.error("getAll No songs found");
@@ -244,8 +244,8 @@ public class SongController
 
           log.info("deleteSong: Found Song to delete : " + optSong.get().getTitle());
 
-
           songService.deleteSong(id);
+
           return new ResponseEntity<>("Song with ID '" + id + "' was deleted.", HttpStatus.NO_CONTENT);
      }
 

@@ -176,7 +176,6 @@ public class SongControllerTest
      }
 
 
-
      /**
       * Getting a song by an id which doesnt exist
       * we have the ids 1 and 2 in the database
@@ -200,6 +199,28 @@ public class SongControllerTest
           //Verify Result
           Assert.assertEquals("No Song with ID 3", result.getResponse().getContentAsString());
      }
+
+
+     /**
+      * Getting a song by an id < 0
+      * @throws Exception
+      */
+     @Test
+     public void getSongByIdWithNegativeId() throws Exception
+     {
+          //Request
+          MvcResult result =
+                  mockMvc.perform(get("/-3")
+                          .accept(MediaType.APPLICATION_JSON)
+                          .header(HttpHeaders.AUTHORIZATION, token))
+                          .andExpect(status().is(400)).andExpect(content()
+                          .contentType(MediaType.APPLICATION_JSON)).andReturn();
+
+
+          //Verify Result
+          Assert.assertEquals("The ID needs to be positive", result.getResponse().getContentAsString());
+     }
+
 
 
 
@@ -442,6 +463,25 @@ public class SongControllerTest
      }
 
 
+     /**
+      *Deleting with negative id
+      */
+     @Test
+     public void deleteWithNegativeID() throws Exception
+     {
+          //delete entry
+          MvcResult result =
+                  mockMvc.perform(delete("/-20")
+                          .accept(MediaType.APPLICATION_JSON)
+                          .header(HttpHeaders.AUTHORIZATION, token))
+                          .andExpect(status().is(400)).andExpect(content()
+                          .contentType(MediaType.APPLICATION_JSON)).andReturn();
+
+          //Verify Result
+          Assert.assertEquals("ID cant be less than 0. Your ID was : -20", result.getResponse().getContentAsString());
+     }
+
+
 
      /**
       * Deleting a song With invalid Authorization shouldn't work
@@ -524,6 +564,29 @@ public class SongControllerTest
 
           //Verify Result
           Assert.assertEquals("URL ID doesnt match payload ID.", result.getResponse().getContentAsString());
+
+     }
+
+     /**
+      * Mismatching id between url and body should
+      * return a HTTP 400 and a message
+      * @throws Exception
+      */
+     @Test
+     public void putEmptyName() throws Exception
+     {
+          //Changing Title of  song with id 2
+          Song changedSong = Song.builder().withId(2).withTitle("").withArtist("alsoChanged").build();
+
+          MvcResult result =
+                  mockMvc.perform(put("/2")
+                          .accept(MediaType.APPLICATION_JSON)
+                          .header(HttpHeaders.AUTHORIZATION, token)
+                          .contentType(MediaType.APPLICATION_JSON)
+                          .content(asJsonString(changedSong))).andExpect(status().is(400)).andReturn();
+
+          //Verify Result
+          Assert.assertEquals("Wrong body: title is null or has no declaration.", result.getResponse().getContentAsString());
 
      }
 
