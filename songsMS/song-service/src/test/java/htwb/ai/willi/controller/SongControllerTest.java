@@ -98,7 +98,7 @@ public class SongControllerTest
           String content = (result.getResponse().getContentAsString());
           List<Song> songs = Arrays.asList(new ObjectMapper().readValue(content, Song[].class));
           Assert.assertTrue(songs.size() > 0);
-          Assert.assertEquals(songs.size(), 2);
+          Assert.assertEquals(songs.size(), 4);
      }
 
 
@@ -189,7 +189,7 @@ public class SongControllerTest
      {
           //Request
           MvcResult result =
-               mockMvc.perform(get("/3")
+               mockMvc.perform(get("/7")
                        .accept(MediaType.APPLICATION_JSON)
                        .header(HttpHeaders.AUTHORIZATION, token))
                        .andExpect(status().is(404)).andExpect(content()
@@ -197,7 +197,7 @@ public class SongControllerTest
 
 
           //Verify Result
-          Assert.assertEquals("No Song with ID 3", result.getResponse().getContentAsString());
+          Assert.assertEquals("No Song with ID 7", result.getResponse().getContentAsString());
      }
 
 
@@ -240,7 +240,7 @@ public class SongControllerTest
      public void postANewSong() throws Exception
      {
           //The Song to post
-          Song song = new Song(3, "Travelling Light", "Leonard Cohen", "Columbia", 2016);
+          Song song = new Song(6, "Travelling Light", "Leonard Cohen", "Columbia", 2016);
 
           // Request
           MvcResult response =
@@ -256,7 +256,7 @@ public class SongControllerTest
 
           //Request the new song
           MvcResult getterResponse =
-                  mockMvc.perform(get("/3")
+                  mockMvc.perform(get("/6")
                           .accept(MediaType.APPLICATION_JSON)
                           .header(HttpHeaders.AUTHORIZATION, token))
                           .andExpect(status().is(200)).andExpect(content()
@@ -283,7 +283,7 @@ public class SongControllerTest
      public void postSongWithInvalidAuthorization() throws Exception
      {
           //The Song to post
-          Song song = new Song(3, "Travelling Light", "Leonard Cohen", "Columbia", 2016);
+          Song song = new Song(6, "Travelling Light", "Leonard Cohen", "Columbia", 2016);
 
           // Request
           MvcResult result =
@@ -310,7 +310,7 @@ public class SongControllerTest
      public void postSongWithoutTitle() throws Exception
      {
           //The Song to post
-          Song song = new Song(3, "", "Leonard Cohen", "Columbia", 2016);
+          Song song = new Song(6, "", "Leonard Cohen", "Columbia", 2016);
 
 
           MvcResult result =
@@ -334,7 +334,7 @@ public class SongControllerTest
      public void postSongWithoutLabel() throws Exception
      {
           //The Song to post
-          Song song = new Song(3, "Travelling Light", "Leonard Cohen", "", 2016);
+          Song song = new Song(6, "Travelling Light", "Leonard Cohen", "", 2016);
 
           MvcResult response =
                   mockMvc.perform(post("/")
@@ -345,7 +345,7 @@ public class SongControllerTest
 
           //Request the new song
           MvcResult getterResponse =
-                  mockMvc.perform(get("/3")
+                  mockMvc.perform(get("/6")
                           .accept(MediaType.APPLICATION_JSON)
                           .header(HttpHeaders.AUTHORIZATION, token))
                           .andExpect(status().is(200)).andExpect(content()
@@ -371,7 +371,7 @@ public class SongControllerTest
      public void postSongWithoutArtist() throws Exception
      {
           //The Song to post
-          Song song = new Song(3, "Travelling Light", "", "Columbia", 2016);
+          Song song = new Song(6, "Travelling Light", "", "Columbia", 2016);
 
           MvcResult response =
                   mockMvc.perform(post("/")
@@ -382,7 +382,7 @@ public class SongControllerTest
 
           //Request the new song
           MvcResult getterResponse =
-                  mockMvc.perform(get("/3")
+                  mockMvc.perform(get("/6")
                           .accept(MediaType.APPLICATION_JSON)
                           .header(HttpHeaders.AUTHORIZATION, token))
                           .andExpect(status().is(200)).andExpect(content()
@@ -417,18 +417,18 @@ public class SongControllerTest
 
           //delete entry
           MvcResult result =
-                  mockMvc.perform(delete("/1")
+                  mockMvc.perform(delete("/3")
                           .accept(MediaType.APPLICATION_JSON)
                           .header(HttpHeaders.AUTHORIZATION, token))
                           .andExpect(status().is(204)).andExpect(content()
                           .contentType(MediaType.APPLICATION_JSON)).andReturn();
 
           //Verify Result
-          Assert.assertEquals("Song with ID '1' was deleted.", result.getResponse().getContentAsString());
+          Assert.assertEquals("Song with ID '3' was deleted.", result.getResponse().getContentAsString());
 
           //Request
           MvcResult resultGet =
-                  mockMvc.perform(get("/1")
+                  mockMvc.perform(get("/3")
                           .accept(MediaType.APPLICATION_JSON)
                           .header(HttpHeaders.AUTHORIZATION, token))
                           .andExpect(status().is(404)).andExpect(content()
@@ -436,7 +436,7 @@ public class SongControllerTest
 
 
           //Verify Result
-          Assert.assertEquals("No Song with ID 1", resultGet.getResponse().getContentAsString());
+          Assert.assertEquals("No Song with ID 3", resultGet.getResponse().getContentAsString());
 
      }
 

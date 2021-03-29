@@ -182,7 +182,7 @@ public class SongListController
 
           if (songs.size() == 0)
           {
-               return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+               return new ResponseEntity("There are no Playlists for user " + userId, HttpStatus.NOT_FOUND);
           }
 
           if (userIDForGivenAuthorizationToken.equals(userId))
@@ -247,19 +247,6 @@ public class SongListController
                        "Song" + " ", HttpStatus.BAD_REQUEST);
           }
 
-          if (songList == null)
-          {
-               log.error("postSongList: No  JSON was transmitted");
-               return new ResponseEntity<>("Body was empty, no SongList JSON", HttpStatus.BAD_REQUEST);
-          }
-
-          if (songList.getIsPrivate() == null)
-          {
-               log.error("postSongList: isPrivate was null");
-               return new ResponseEntity<>("The visibility needs to be set, set isPrivate to true or false",
-                       HttpStatus.BAD_REQUEST);
-          }
-
 
           log.info("postSongList: Proceeding to add the new songList...");
           Set<Song> songsFromPayload = songList.getSongList();
@@ -296,7 +283,7 @@ public class SongListController
      //-----------HTTP DELETE -----------//
 
 
-     @DeleteMapping(value = "/{id}")
+     @DeleteMapping(value = "/{id}", produces = {MediaType.APPLICATION_JSON_VALUE})
      public ResponseEntity<String> deleteSongList(@PathVariable(value = "id") Integer id, @RequestHeader(
              "Authorization") String authorization)
      {
@@ -332,10 +319,10 @@ public class SongListController
                     if (userIDForGivenAuthorizationToken.equals(songList.getOwnerId()))
                     {
                          songListService.deleteList(songList);
-                         return new ResponseEntity<>("Song with ID '" + id + "' was deleted.", HttpStatus.NO_CONTENT);
+                         return new ResponseEntity<>("Playlist with ID '" + id + "' was deleted.", HttpStatus.ACCEPTED);
                     }
                }
-               return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
+               return new ResponseEntity<>("You arent the owner of the SongList", HttpStatus.FORBIDDEN);
           }
           return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
 
