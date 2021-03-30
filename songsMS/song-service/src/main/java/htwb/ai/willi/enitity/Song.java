@@ -10,7 +10,7 @@ import java.io.Serializable;
  */
 @Entity
 @Table(name="songs")
-public class Song implements Serializable, Comparable<Song>
+public class Song implements Serializable
 {
 
 
@@ -208,16 +208,5 @@ public class Song implements Serializable, Comparable<Song>
      //-----------OTHERS-----------//
 
 
-     @Override
-     public int compareTo(Song o)
-     {
-          if(this.getTitle().equals(o.getTitle()) &&
-                  this.getArtist().equals(o.getArtist()) &&
-                  this.getLabel().equals(o.getLabel()) &&
-                  this.getReleased() == o.getReleased())
-          {
-               return 1;
-          }
-          return -1;
-     }
+
 }

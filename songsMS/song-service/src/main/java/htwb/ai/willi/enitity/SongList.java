@@ -118,19 +118,4 @@ public class SongList implements Serializable
           this.name = name;
      }
 
-
-     //-----------OTHERS-----------//
-
-
-     @Override
-     public String toString()
-     {
-          String content = "";
-
-          for(Song s : songList)
-          {
-               content += "[ID=" + s.getId() + "][TITLE=" + s.getTitle() + "][ARTIST=" + s.getArtist() + "][LABEL=" + s.getLabel() + "][RELEASED=" + s.getReleased() + "]\n";
-          }
-          return content;
-     }
 }

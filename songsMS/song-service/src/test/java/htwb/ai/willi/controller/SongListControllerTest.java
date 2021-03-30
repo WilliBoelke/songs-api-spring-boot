@@ -156,6 +156,8 @@ public class SongListControllerTest
 
 
 
+
+
      //-----------GET SONGLIST BY ID-----------//
 
 
@@ -209,6 +211,29 @@ public class SongListControllerTest
      }
 
 
+     /**
+      * Getting a private list from another user should not work
+      * and return Http 403 / forbidden and a message
+      * here is use the song with the id 6  which is private and owned by "otherUser"
+      * not "testUser" who will be returned by the mocked RestTemplateWrapper
+      *
+      * @throws Exception
+      */
+     @Test
+     public void getSongBIdForNotOwnedPlayList() throws Exception
+     {
+          //Request
+          MvcResult result =
+                  mockMvc.perform(get("/playlist/6").header(HttpHeaders.AUTHORIZATION, token))
+                          .andExpect(status().is(403)).andExpect(content()
+                          .contentType(MediaType.APPLICATION_JSON)).andReturn();
+
+
+          //Verify Result
+          String content = (result.getResponse().getContentAsString());
+          Assert.assertEquals("you arent the owner of the requested list, and the requested list is not public", content);
+     }
+
 
      //-----------POST NEW SONGLIST-----------//
 
@@ -243,7 +268,7 @@ public class SongListControllerTest
 
          // Getting the List
           MvcResult resultGet =
-                  mockMvc.perform(get("/playlist/6").header(HttpHeaders.AUTHORIZATION, token))
+                  mockMvc.perform(get("/playlist/7").header(HttpHeaders.AUTHORIZATION, token))
                           .andExpect(status().is(202)).andExpect(content()
                           .contentType(MediaType.APPLICATION_JSON)).andReturn();
 

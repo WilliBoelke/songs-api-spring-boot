@@ -2,7 +2,8 @@ insert into songs(id,title,artist,label,released) values (1,'test','test','test'
 insert into songs(id,title,artist,label,released) values (2,'test','test','test',1985);
 insert into songs(id,title,artist,label,released) values (3,'test','test','test',1985);
 
-insert into songlist(id,is_private,name,ownerid) values (1,false,'testplalist','testuser');
+insert into songlist(id,is_private,name,ownerid) values (1,false ,'testplalist','testuser');
+insert into songlist(id,is_private,name,ownerid) values (6,true,'privateTest','otherUser');
 insert into songlist(id,is_private,name,ownerid) values (4,false,'deleteTestPlayList','testuser');
 
 insert into songlist(id,is_private,name,ownerid) values (2,false,'getAllTest1','owner');
