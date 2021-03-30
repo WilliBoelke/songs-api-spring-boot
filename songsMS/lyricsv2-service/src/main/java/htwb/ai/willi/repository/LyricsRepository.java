@@ -73,6 +73,8 @@ public class LyricsRepository
                BufferedReader bf = new BufferedReader(fileReader, 10000);
                String Json = bf.readLine();
                log.info("getLyrics: Read the following JSON string from File: " + Json);
+               bf.close();
+               fileReader.close();
                return asLyricObject(Json);
           }
           else
