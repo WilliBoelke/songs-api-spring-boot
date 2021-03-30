@@ -128,16 +128,6 @@ public class LyricsRepository
           return 1; // song doesnt exist
      }
 
-     public void updateLyrics(String name)
-     {
-
-     }
-
-     public void getBySongID(int id)
-     {
-
-     }
-
 
      //-----------FILE MANAGEMENT-----------//
 

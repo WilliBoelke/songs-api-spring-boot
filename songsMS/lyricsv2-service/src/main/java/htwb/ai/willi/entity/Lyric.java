@@ -10,7 +10,7 @@ import java.io.Serializable;
  *
  * Finally they have a string which - of course - contains the Lyrics itself
  */
-public class Lyric implements Serializable, Comparable<Lyric>
+public class Lyric implements Serializable
 {
 
 
@@ -85,18 +85,4 @@ public class Lyric implements Serializable, Comparable<Lyric>
      }
 
 
-     //-----------OTHERS -----------//
-
-
-     @Override
-     public int compareTo(Lyric o)
-     {
-
-          if (this.getSongTitle().equals(o.getSongTitle()) && this.getLyric().equals(o.getLyric()))
-          {
-               return 1;
-          }
-          return -1;
-
-     }
 }
