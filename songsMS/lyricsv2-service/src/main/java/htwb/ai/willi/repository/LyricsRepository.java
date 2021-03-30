@@ -131,6 +131,18 @@ public class LyricsRepository
      }
 
 
+     public int updateLyrics(Lyric lyric) throws IOException
+     {
+          if(doesFileExist(lyric.getSongTitle()))
+          {
+               deleteLyrics(lyric.getSongTitle());
+               addLyrics(lyric);
+               return 0;
+          }
+          return 1;
+     }
+
+
      //-----------FILE MANAGEMENT-----------//
 
 
@@ -235,5 +247,6 @@ public class LyricsRepository
      {
           this.currentDirectoryPath = path;
      }
+
 
 }

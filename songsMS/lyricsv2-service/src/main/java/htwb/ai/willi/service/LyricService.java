@@ -63,4 +63,9 @@ public class LyricService
           return 1;
      }
 
+     public int updateLyrics(Lyric lyric) throws IOException
+     {
+        return  lyricsRepository.updateLyrics(lyric);
+     }
+
 }

@@ -288,4 +288,68 @@ public class LyricController
                             HttpStatus.INTERNAL_SERVER_ERROR);
           }
      }
+
+
+
+     //-----------HTTP PUT -----------//
+
+
+     /**
+      * Posting new Lyrics, new Lyrics will be saved to the local file system using
+      * the {@link LyricService} and the LyricsRepository
+      *
+      * @param lyric
+      *         the new lyrics
+      * @param request
+      *
+      * @return A ResponseEntity containing the HTTP Status and a message
+      */
+     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+     public ResponseEntity<String> updateLyrics(@RequestBody Lyric lyric, HttpServletRequest request, @RequestHeader(
+             "Authorization") String authorization)
+     {
+
+          log.info("updateLyrics: Called with updated Lyrics for the Song : " + lyric.getSongTitle());
+
+
+          // Check user token
+
+
+          String userIDForGivenAuthorizationToken = "";
+          try
+          {
+               userIDForGivenAuthorizationToken = authRestTemplateWrapper.request(authorization);
+          }
+          catch (HttpClientErrorException | HttpServerErrorException httpClientOrServerExc)
+          {
+               return new ResponseEntity("Not a valid authorization token :  " + authorization,
+                       HttpStatus.UNAUTHORIZED);
+          }
+
+
+          // Validate lyrics
+
+
+          if (lyric.getSongTitle() == null || lyric.getSongTitle().equals(""))
+          {
+               log.error("postSong: Lyrics without title");
+               return new ResponseEntity<>("Wrong body: no title", HttpStatus.BAD_REQUEST);
+          }
+
+
+          try
+          {
+               switch (lyricService.updateLyrics(lyric))
+               {
+                    case 1:
+                         return new ResponseEntity<>("The Lyrics with the name " + lyric.getSongTitle()+ " dont exist", HttpStatus.BAD_REQUEST);
+               }
+          }
+          catch (IOException e)
+          {
+               e.printStackTrace();
+          }
+
+          return new ResponseEntity<>("The Lyrics are saved, yo can access them under \\lyrics\\" + lyric.getSongTitle(), HttpStatus.CREATED);
+     }
 }
