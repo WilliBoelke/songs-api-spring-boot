@@ -1,6 +1,7 @@
 package htwb.ai.willi.service;
 
 
+import htwb.ai.willi.enitity.Song;
 import htwb.ai.willi.enitity.SongList;
 import htwb.ai.willi.repository.SongListRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,5 +77,16 @@ public class SongListService
      public void deleteList(SongList songList)
      {
           songListRepository.delete(songList);
+     }
+
+     /**
+      * Updates a songList
+      * @param songList
+      * The updated songist
+      */
+     public void updateSongList(SongList songList, SongList old)
+     {
+          songListRepository.delete(old);
+          songListRepository.save(songList);
      }
 }
