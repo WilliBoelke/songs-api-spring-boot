@@ -351,6 +351,164 @@ public class LyricsServiceApplicationTests {
 	}
 
 
+	//-----------HTTP PUT-----------//
+
+
+	/**
+	 *PUT  Lyrics without title
+	 * Expecting Http 400 / BadRequest
+	 * and a message
+	 * I mocked the RestTemplateWrapper so that the song with id 3
+	 * will not exist
+	 * @throws Exception
+	 */
+	@Test
+	public void putSongWithoutTitle() throws Exception
+	{
+		//The Lyrics to post
+		Lyric testLyric = new Lyric(3, "", "Here comes the sun (doo doo doo doo)\n" + "Here comes the sun, and I say\n" + "It's all right\n" + "\n" + "Little darling, it's been a long cold lonely winter\n" + "Little darling, it feels like years since it's been here\n" + "Here comes the sun\n" + "Here comes the sun, and I say\n" + "It's all right\n" + "\n" + "Little darling, the smiles returning to the faces\n" + "Little darling, it seems like years since it's been here\n" + "Here comes the sun\n" + "Here comes the sun, and I say\n" + "It's all right\n" + "\n" + "Sun, sun, sun, here it comes\n" + "Sun, sun, sun, here it comes\n" + "Sun, sun, sun, here it comes\n" + "Sun, sun, sun, here it comes\n" + "Sun, sun, sun, here it comes\n" + "\n" + "Little darling, I feel that ice is slowly melting\n" + "Little darling, it seems like years since it's been clear\n" + "Here comes the sun\n" + "Here comes the sun, and I say\n" + "It's all right\n" + "\n" + "Here comes the sun\n" + "Here comes the sun, and I say\n" + "It's all right\n" + "It's all right");
+
+		// Request
+		MvcResult response =
+			mockMvc.perform(put("/lyrics")
+				.accept(MediaType.APPLICATION_JSON)
+				.header(HttpHeaders.AUTHORIZATION, token)
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(asJsonString(testLyric))).andExpect(status()
+				.is(400)).andReturn();
+
+		Assert.assertEquals("Wrong body: no title", response.getResponse().getContentAsString());
+	}
+
+
+
+	/**
+	 * Putting   valid lyrics, but the auth token is
+	 * invalid
+	 * Expecting Http 401 / Unathorized
+	 * and a message
+	 * @throws Exception
+	 */
+	@Test
+	public void putNewLyricsWrongAuth() throws Exception
+	{
+		//The Song to post
+		Lyric testLyric = new Lyric(1, "Here Comes The Sun", "Here comes the sun (doo doo doo doo)\n" + "Here comes the sun, and I say\n" + "It's all right\n" + "\n" + "Little darling, it's been a long cold lonely winter\n" + "Little darling, it feels like years since it's been here\n" + "Here comes the sun\n" + "Here comes the sun, and I say\n" + "It's all right\n" + "\n" + "Little darling, the smiles returning to the faces\n" + "Little darling, it seems like years since it's been here\n" + "Here comes the sun\n" + "Here comes the sun, and I say\n" + "It's all right\n" + "\n" + "Sun, sun, sun, here it comes\n" + "Sun, sun, sun, here it comes\n" + "Sun, sun, sun, here it comes\n" + "Sun, sun, sun, here it comes\n" + "Sun, sun, sun, here it comes\n" + "\n" + "Little darling, I feel that ice is slowly melting\n" + "Little darling, it seems like years since it's been clear\n" + "Here comes the sun\n" + "Here comes the sun, and I say\n" + "It's all right\n" + "\n" + "Here comes the sun\n" + "Here comes the sun, and I say\n" + "It's all right\n" + "It's all right");
+
+		// Request
+		MvcResult response =
+			mockMvc.perform(put("/lyrics")
+				.accept(MediaType.APPLICATION_JSON)
+				.header(HttpHeaders.AUTHORIZATION, invalidToken)
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(asJsonString(testLyric))).andExpect(status()
+				.is(401)).andReturn();
+
+		Assert.assertEquals("Not a valid authorization token :  invalidToken", response.getResponse().getContentAsString());
+	}
+
+
+	/**
+	 * Putting lrics which doesnt exist (title)
+	 * Expecting Http 400 / Bad Requesr
+	 * and a message
+	 * @throws Exception
+	 */
+	@Test
+	public void putLyricsWrongTitle() throws Exception
+	{
+		//The Song to post
+		Lyric testLyric = new Lyric(1, "Here Comes The Moon", "Here comes the sun (doo doo doo doo)\n" + "Here comes the sun, and I say\n" + "It's all right\n" + "\n" + "Little darling, it's been a long cold lonely winter\n" + "Little darling, it feels like years since it's been here\n" + "Here comes the sun\n" + "Here comes the sun, and I say\n" + "It's all right\n" + "\n" + "Little darling, the smiles returning to the faces\n" + "Little darling, it seems like years since it's been here\n" + "Here comes the sun\n" + "Here comes the sun, and I say\n" + "It's all right\n" + "\n" + "Sun, sun, sun, here it comes\n" + "Sun, sun, sun, here it comes\n" + "Sun, sun, sun, here it comes\n" + "Sun, sun, sun, here it comes\n" + "Sun, sun, sun, here it comes\n" + "\n" + "Little darling, I feel that ice is slowly melting\n" + "Little darling, it seems like years since it's been clear\n" + "Here comes the sun\n" + "Here comes the sun, and I say\n" + "It's all right\n" + "\n" + "Here comes the sun\n" + "Here comes the sun, and I say\n" + "It's all right\n" + "It's all right");
+
+		// Request
+		MvcResult response =
+			mockMvc.perform(put("/lyrics")
+				.accept(MediaType.APPLICATION_JSON)
+				.header(HttpHeaders.AUTHORIZATION, token)
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(asJsonString(testLyric))).andExpect(status()
+				.is(400)).andReturn();
+
+		Assert.assertEquals("The Lyrics with the name Here Comes The Moon dont exist", response.getResponse().getContentAsString());
+	}
+
+
+
+	/**
+	 * Putting valid lyrics
+	 * Expecting Http 401 / Unathorized
+	 * and a message
+	 * @throws Exception
+	 */
+	@Test
+	public void putLyrics() throws Exception
+	{
+		Lyric testLyric = new Lyric(1, "Here Comes The Sun", "Here comes the sun (doo doo doo doo)\n" + "Here comes the sun, and I say\n" + "It's all right\n" + "\n" + "Little darling, it's been a long cold lonely winter\n" + "Little darling, it feels like years since it's been here\n" + "Here comes the sun\n" + "Here comes the sun, and I say\n" + "It's all right\n" + "\n" + "Little darling, the smiles returning to the faces\n" + "Little darling, it seems like years since it's been here\n" + "Here comes the sun\n" + "Here comes the sun, and I say\n" + "It's all right\n" + "\n" + "Sun, sun, sun, here it comes\n" + "Sun, sun, sun, here it comes\n" + "Sun, sun, sun, here it comes\n" + "Sun, sun, sun, here it comes\n" + "Sun, sun, sun, here it comes\n" + "\n" + "Little darling, I feel that ice is slowly melting\n" + "Little darling, it seems like years since it's been clear\n" + "Here comes the sun\n" + "Here comes the sun, and I say\n" + "It's all right\n" + "\n" + "Here comes the sun\n" + "Here comes the sun, and I say\n" + "It's all right\n" + "It's all right");
+
+		// Request
+
+		MvcResult postRespnse =
+			mockMvc.perform(post("/lyrics")
+				.accept(MediaType.APPLICATION_JSON)
+				.header(HttpHeaders.AUTHORIZATION, token)
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(asJsonString(testLyric))).andExpect(status()
+				.is(201)).andReturn();
+
+		//Getting the newly added song
+
+		MvcResult getterResponse1 =
+			mockMvc.perform(get("/lyrics/Here Comes The Sun")
+				.accept(MediaType.APPLICATION_JSON)
+				.header(HttpHeaders.AUTHORIZATION, token))
+				.andExpect(status().is(200)).andExpect(content()
+				.contentType(MediaType.APPLICATION_JSON)).andReturn();
+
+		//verify
+
+		Assert.assertEquals("{\"songId\":1,\"songTitle\":\"Here Comes The Sun\",\"lyric\":\"Here comes the sun (doo " +
+			"doo doo doo)\\nHere comes the sun, and I say\\nIt's all right\\n\\nLittle darling, it's been a long " +
+			"cold lonely winter\\nLittle darling, it feels like years since it's been here\\nHere comes the " +
+			"sun\\nHere comes the sun, and I say\\nIt's all right\\n\\nLittle darling, the smiles returning to the " +
+			"faces\\nLittle darling, it seems like years since it's been here\\nHere comes the sun\\nHere comes the" +
+			" sun, and I say\\nIt's all right\\n\\nSun, sun, sun, here it comes\\nSun, sun, sun, here it " +
+			"comes\\nSun, sun, sun, here it comes\\nSun, sun, sun, here it comes\\nSun, sun, sun, here it " +
+			"comes\\n\\nLittle darling, I feel that ice is slowly melting\\nLittle darling, it seems like years " +
+			"since it's been clear\\nHere comes the sun\\nHere comes the sun, and I say\\nIt's all right\\n\\nHere " +
+			"comes the sun\\nHere comes the sun, and I say\\nIt's all right\\nIt's all right\"}", getterResponse1.getResponse().getContentAsString());
+
+		//The Song update
+		testLyric = new Lyric(1, "Here Comes The Sun", "Here comes the sun (doo doo doo doo...and the rest is changed");
+
+		// Request
+		MvcResult puResponse =
+			mockMvc.perform(put("/lyrics")
+				.accept(MediaType.APPLICATION_JSON)
+				.header(HttpHeaders.AUTHORIZATION, token)
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(asJsonString(testLyric))).andExpect(status()
+				.is(201)).andReturn();
+
+		Assert.assertEquals("The Lyrics are saved, yo can access them under \\lyrics\\Here Comes The Sun", puResponse.getResponse().getContentAsString());
+
+
+		//Getting the newly added song
+
+		MvcResult getterResponse2 =
+			mockMvc.perform(get("/lyrics/Here Comes The Sun")
+				.accept(MediaType.APPLICATION_JSON)
+				.header(HttpHeaders.AUTHORIZATION, token))
+				.andExpect(status().is(200)).andExpect(content()
+				.contentType(MediaType.APPLICATION_JSON)).andReturn();
+
+		//verify
+
+		Assert.assertEquals("{\"songId\":1,\"songTitle\":\"Here Comes The Sun\",\"lyric\":\"Here comes the sun (doo " +
+			"doo doo doo...and the rest is changed\"}", getterResponse2.getResponse().getContentAsString());
+	}
+
+
+
 
 	//-----------DELETE-----------//
 
