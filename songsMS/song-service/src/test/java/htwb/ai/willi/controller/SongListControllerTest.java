@@ -268,7 +268,7 @@ public class SongListControllerTest
 
          // Getting the List
           MvcResult resultGet =
-                  mockMvc.perform(get("/playlist/7").header(HttpHeaders.AUTHORIZATION, token))
+                  mockMvc.perform(get("/playlist/9").header(HttpHeaders.AUTHORIZATION, token))
                           .andExpect(status().is(202)).andExpect(content()
                           .contentType(MediaType.APPLICATION_JSON)).andReturn();
 
@@ -429,5 +429,89 @@ public class SongListControllerTest
 
 
      }
+
+
+     //-----------PUT SONGLIST-----------//
+
+     private String updateJSON = "{\n" + "    \"ownerId\": \"testuser\",\n" + "\t\"isPrivate\": false,\n" + "\t\"name\": \"updateTestUpdated\",\n" + "\t\"songList\": [\n" + "\t\t{\n" + "\t\t\t\"id\": 5,\n" + "\t\t\t\"title\": \"We Built This City\",\n" + "\t\t\t\"artist\": \"Starship\",\n" + "\t\t\t\"label\": \"Grunt/RCA\",\n" + "\t\t\t\"released\": 1985\n" + "\t\t},\n" + "\t\t{\n" + "\t\t\t\"id\": 4,\n" + "\t\t\t\"title\": \"Sussudio\",\n" + "\t\t\t\"artist\": \"Phil Collins\",\n" + "\t\t\t\"label\": \"Virgin\",\n" + "\t\t\t\"released\": 1985\n" + "\t\t}\n" + "\t]\n" + "}\n" + " ";
+
+     @Test
+     public void updatePlayList() throws Exception
+     {
+
+          //delete entry
+          MvcResult result1 =
+                  mockMvc.perform(put("/playlist/7").header(HttpHeaders.AUTHORIZATION, token).accept(MediaType.APPLICATION_JSON)
+                          .content(updateJSON)
+                          .contentType(MediaType.APPLICATION_JSON))
+                          .andExpect(status().is(201))
+                           .andExpect(content()
+                          .contentType(MediaType.APPLICATION_JSON)).andReturn();
+
+          //Verify Result
+          Assert.assertEquals("Song List was updated", result1.getResponse().getContentAsString());
+
+          //Request
+          MvcResult resultGet =
+                  mockMvc.perform(get("/playlist/8")
+                          .accept(MediaType.APPLICATION_JSON)
+                          .header(HttpHeaders.AUTHORIZATION, token))
+                          .andExpect(status().is(202)).andExpect(content()
+                          .contentType(MediaType.APPLICATION_JSON)).andReturn();
+
+
+          //Verify Result
+          Assert.assertTrue(resultGet.getResponse().getContentAsString().contains("updateTestUpdated"));
+
+     }
+
+     @Test
+     public void updatePlayListNotOwner() throws Exception
+     {
+          // Not Owner
+
+          MvcResult result =
+                  mockMvc.perform(put("/playlist/2").header(HttpHeaders.AUTHORIZATION, token).accept(MediaType.APPLICATION_JSON)
+                          .content(updateJSON)
+                          .contentType(MediaType.APPLICATION_JSON))
+                          .andExpect(status().is(401))
+                          .andExpect(content()
+                                  .contentType(MediaType.APPLICATION_JSON)).andReturn();
+
+          //Verify Result
+          Assert.assertEquals("You arent the owner of the Playlist, you arent allow to make any changes", result.getResponse().getContentAsString());
+     }
+
+
+     @Test
+     public void updatePlayListWrongToken() throws Exception
+     {
+
+          MvcResult result =
+                  mockMvc.perform(put("/playlist/8").header(HttpHeaders.AUTHORIZATION, invalidToken).accept(MediaType.APPLICATION_JSON)
+                          .content(updateJSON)
+                          .contentType(MediaType.APPLICATION_JSON))
+                          .andExpect(status().is(401))
+                          .andExpect(content()
+                                  .contentType(MediaType.APPLICATION_JSON)).andReturn();
+     }
+
+     @Test
+     public void updatePlayListNotExisting() throws Exception
+     {
+
+          MvcResult result =
+                  mockMvc.perform(put("/playlist/200").header(HttpHeaders.AUTHORIZATION, token).accept(MediaType.APPLICATION_JSON)
+                          .content(updateJSON)
+                          .contentType(MediaType.APPLICATION_JSON))
+                          .andExpect(status().is(400))
+                          .andExpect(content()
+                                  .contentType(MediaType.APPLICATION_JSON)).andReturn();
+
+          //Verify Result
+          Assert.assertEquals("The songlist with the id doesnt exist ", result.getResponse().getContentAsString());
+     }
+
+
 
 }

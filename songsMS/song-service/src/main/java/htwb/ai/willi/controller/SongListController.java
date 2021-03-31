@@ -375,9 +375,9 @@ public class SongListController
           {
                return new ResponseEntity<>("The songlist with the id doesnt exist ", HttpStatus.BAD_REQUEST);
           }
-          if (false == songListFromDatabase.get().getOwnerId().trim().equals(userIDForGivenAuthorizationToken.trim()))
+          if (! songListFromDatabase.get().getOwnerId().trim().equals(userIDForGivenAuthorizationToken.trim()))
           {
-               log.error("updateSongList:  owner missmatch actual : " + songList.getOwnerId() + " given : "  + userIDForGivenAuthorizationToken );
+               log.error("updateSongList:  owner missmatch actual : " + songListFromDatabase.get().getOwnerId() + " given : "  + userIDForGivenAuthorizationToken );
                return new ResponseEntity<>("You arent the owner of the Playlist, you arent allow to make any changes", HttpStatus.UNAUTHORIZED);
           }
 

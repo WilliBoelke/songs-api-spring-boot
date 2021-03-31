@@ -9,6 +9,7 @@ insert into songlist(id,is_private,name,ownerid) values (4,false,'deleteTestPlay
 insert into songlist(id,is_private,name,ownerid) values (2,false,'getAllTest1','owner');
 insert into songlist(id,is_private,name,ownerid) values (3,false,'getAllTest2','owner');
 insert into songlist(id,is_private,name,ownerid) values (5,false,'getAllTest3','owner');
+insert into songlist(id,is_private,name,ownerid) values (7,false,'updateTest','testuser');
 
 
 insert into song_song_list(list_id, song_id) values (1,1);
